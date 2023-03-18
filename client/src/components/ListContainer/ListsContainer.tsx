@@ -18,6 +18,8 @@ const FAKE_DATA = [
       { title: "Task 4", description: "This task needs to be completed" },
       { title: "Task 5", description: "Pranav needs to complete this" },
       { title: "Task 6", description: "Someone needs to be completed" },
+      { title: "Task 7", description: "Why this is pending" },
+      { title: "Task 8", description: "Find the advantages of React" },
     ],
   },
 ];
@@ -25,7 +27,7 @@ const FAKE_DATA = [
 export const ListsContainer = () => {
   return (
     <>
-      <div className="flex flex-row space-x-10 mt-20 ml-4 md:mt-28 md:ml-6 lg:mt-32">
+      <div className="flex flex-row space-x-10 mt-20 ml-4 md:mt-28 md:ml-6 lg:mt-32 overflow-y-scroll">
         {FAKE_DATA.map((item, index) => {
           return (
             <List

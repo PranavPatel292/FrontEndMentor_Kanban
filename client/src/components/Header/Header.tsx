@@ -5,7 +5,7 @@ import { BoardNameSection } from "./BoardNameSection";
 export const Header = () => {
   return (
     <>
-      <div className="absolute flex flex-row items-center w-full h-16 md:h-20 lg:h-24 bg-darkGrey divide-x">
+      <div className="absolute flex flex-row items-center w-full h-16 md:h-20 lg:h-24 bg-darkGrey md:divide-x">
         <BannerSection />
         <BoardNameSection />
       </div>

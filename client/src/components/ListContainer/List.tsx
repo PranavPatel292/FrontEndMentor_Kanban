@@ -12,7 +12,7 @@ export const List = ({ indicatorColor, list }: ListProps) => {
       <div className="flex flex-col space-y-10 min-w-[280px]">
         <p className="flex flex-row space-x-3 items-center">
           <span className={`flex w-3 h-3 ${indicatorColor} rounded-full`} />
-          <span className="text-xs font-bold leading-4 text-mediumGrey tracking-widest capitalize">
+          <span className="text-xs font-bold leading-4 text-mediumGrey tracking-widest uppercase">
             {list.title} ({list.items.length})
           </span>
         </p>

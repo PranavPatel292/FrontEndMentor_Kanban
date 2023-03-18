@@ -1,4 +1,5 @@
 import React from "react";
+import { AddColumn } from "./AddColumn";
 import { indicatorColor } from "./indicatorColor";
 import { List } from "./List";
 
@@ -22,6 +23,17 @@ const FAKE_DATA = [
       { title: "Task 8", description: "Find the advantages of React" },
     ],
   },
+
+  {
+    title: "done",
+    items: [
+      { title: "Task 9", description: "This task needs to be completed" },
+      { title: "Task 10", description: "Pranav needs to complete this" },
+      { title: "Task 11", description: "Someone needs to be completed" },
+      { title: "Task 12", description: "Why this is pending" },
+      { title: "Task 13", description: "Find the advantages of React" },
+    ],
+  },
 ];
 
 export const ListsContainer = () => {
@@ -39,6 +51,8 @@ export const ListsContainer = () => {
             />
           );
         })}
+
+        <AddColumn />
       </div>
     </>
   );

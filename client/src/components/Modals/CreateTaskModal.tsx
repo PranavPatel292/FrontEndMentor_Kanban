@@ -32,7 +32,10 @@ export const CreateTaskModal = ({ isOpen, onRequestClose }: ModalProps) => {
 
           <Formik
             initialValues={{ fields: [""] }}
-            onSubmit={(values) => console.log(values.fields)}
+            onSubmit={(values, { resetForm }) => {
+              console.log(values.fields);
+              resetForm();
+            }}
           >
             {({ values }) => (
               <Form>

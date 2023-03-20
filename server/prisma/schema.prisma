@@ -9,3 +9,57 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User{
+  id String @id @default(uuid())
+  userName String
+  email String
+}
+
+model Board{
+  id String @id @default(uuid())
+  name String
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  columns Columns[] 
+}
+
+model Columns{
+  id String @id @default(uuid())
+  board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  boardId String 
+  name String
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  task Task[]
+}
+
+model Task{
+  id String @id @default(uuid())
+  columName Columns @relation(fields: [columnId], references: [id], onDelete: Cascade) 
+  columnId String 
+  content String
+  position Int
+  description String
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  subTask SubTask[]
+
+  @@unique([columnId, position])
+}
+
+model SubTask{
+  id String @id @default(uuid())
+  title String
+  staus SubTaskStatus @default(INCOMPLETE)
+  taskId String
+  position Int?
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, position])
+}
+
+enum SubTaskStatus {
+  COMPLETE
+  INCOMPLETE
+}

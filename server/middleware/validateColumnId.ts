@@ -4,18 +4,18 @@ import { Request, Response, NextFunction } from "express";
 import * as yup from "yup";
 
 const schema = yup.object().shape({
-  boardId: yup.string().required(),
+  columnId: yup.string().required(),
 });
 
-export const validateBoardId = async (
+export const validateColumnId = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const boardId = req.query["boardId"] as string;
+  const { columnId } = req.body;
 
   try {
-    await schema.validate(boardId);
+    await schema.validate(req.body);
   } catch (error: any) {
     const response: errorMessage = {
       message: error.message,
@@ -24,9 +24,9 @@ export const validateBoardId = async (
     return;
   }
 
-  const result = await prisma.board.findFirst({
+  const result = await prisma.columns.findFirst({
     where: {
-      id: boardId,
+      id: columnId,
     },
   });
 

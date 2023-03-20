@@ -38,7 +38,7 @@ model Task{
   id String @id @default(uuid())
   columName Columns @relation(fields: [columnId], references: [id], onDelete: Cascade) 
   columnId String 
-  content String
+  title String
   position Int
   description String
   createAt DateTime @default(now())
@@ -51,7 +51,7 @@ model Task{
 model SubTask{
   id String @id @default(uuid())
   title String
-  staus SubTaskStatus @default(INCOMPLETE)
+  status SubTaskStatus @default(INCOMPLETE)
   taskId String
   position Int?
   task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)

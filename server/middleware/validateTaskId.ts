@@ -4,18 +4,18 @@ import { Request, Response, NextFunction } from "express";
 import * as yup from "yup";
 
 const schema = yup.object().shape({
-  boardId: yup.string().required(),
+  taskId: yup.string().required(),
 });
 
-export const validateBoardId = async (
+export const validateTaskId = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const boardId = req.query["boardId"] as string;
+  const taskId = req.query["taskId"] as string;
 
   try {
-    await schema.validate({ boardId: boardId });
+    await schema.validate({ taskId: taskId });
   } catch (error: any) {
     const response: errorMessage = {
       message: error.message,
@@ -24,15 +24,15 @@ export const validateBoardId = async (
     return;
   }
 
-  const result = await prisma.board.findFirst({
+  const result = await prisma.task.findFirst({
     where: {
-      id: boardId,
+      id: taskId,
     },
   });
 
   if (!result) {
     const response: errorMessage = {
-      message: "boardId is not in the database",
+      message: "Invalid taskId",
     };
     res.status(404).send(response);
     return;

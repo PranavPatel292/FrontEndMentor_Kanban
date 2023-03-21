@@ -6,7 +6,7 @@ interface DraggableItemProps {
 }
 
 export const DraggableItem = ({ index, item }: DraggableItemProps) => {
-  const completedSubTasks = item.subTasks?.filter((subtask: any) => {
+  const completedSubTasks = item.subTask?.filter((subtask: any) => {
     return subtask.status === "completed";
   });
 
@@ -26,7 +26,7 @@ export const DraggableItem = ({ index, item }: DraggableItemProps) => {
                     {item.title}
                   </p>
                   <p className="text-mediumGrey leading-4 font-bold text-xs">
-                    {`${completedSubTasks.length} of ${item.subTasks.length} subtasks done`}
+                    {`${completedSubTasks.length} of ${item.subTask.length} subtasks done`}
                   </p>
                 </div>
               </li>

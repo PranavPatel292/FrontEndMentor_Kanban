@@ -23,9 +23,16 @@ export const getAllColumns = async (req: Request, res: Response) => {
             columnId: true,
             title: true,
             description: true,
+            position: true,
             subTask: {
               orderBy: { position: "asc" },
-              select: { id: true, status: true, title: true, taskId: true },
+              select: {
+                id: true,
+                status: true,
+                title: true,
+                taskId: true,
+                position: true,
+              },
             },
           },
         },
@@ -35,7 +42,7 @@ export const getAllColumns = async (req: Request, res: Response) => {
     colsData.map((col) => {
       result[col.id] = {
         name: col.name,
-        item: col.task,
+        items: col.task,
       };
     });
 
@@ -81,6 +88,7 @@ export const getAllColumnsName = async (req: Request, res: Response) => {
   }
 };
 
+// TODO: use yup for validation purposes
 export const createColumn = async (req: Request, res: Response) => {
   try {
     const { name } = req.body;

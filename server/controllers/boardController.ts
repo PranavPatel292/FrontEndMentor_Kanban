@@ -2,6 +2,7 @@ import { prisma } from "../prisma/prismaClient";
 import { Request, Response } from "express";
 import { errorMessage, successMessage } from "../common/returnMessage";
 
+// TODO:- yup validation
 export const getAllBoards = async (req: Request, res: Response) => {
   try {
     const result = await prisma.board.findMany();

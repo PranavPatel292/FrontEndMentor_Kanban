@@ -5,45 +5,41 @@ import { DroppableColumn } from "./DroppableColumn";
 import { indicatorColor } from "./indicatorColor";
 
 const FAKE_DATA = {
-  "182ddf58-3864-4a1a-a9a4-31adf9434a53": {
-    name: "To do",
+  "2f23acf4-7ca6-4ac5-8e89-daf2ee7ed976": {
+    name: "ToDo",
     items: [
       {
-        columnId: "182ddf58-3864-4a1a-a9a4-31adf9434a53",
-        title: "Task 1",
-        description: "This task needs to be completed",
-        subTasks: [
-          { title: "Make coffee", status: "in-completed" },
-          { title: "Make coffee", status: "in-completed" },
+        id: "00c4f3a3-42e7-42c4-b330-130b6dacfae9",
+        columnId: "2f23acf4-7ca6-4ac5-8e89-daf2ee7ed976",
+        title: "Build UI for onboarding flow",
+        description: "This is my first task created using the api and postman",
+        position: 1,
+        subTask: [
+          {
+            id: "426a12f7-ab66-4713-ae91-d2606e30c32e",
+            status: "INCOMPLETE",
+            title: "Make coffee",
+            taskId: "00c4f3a3-42e7-42c4-b330-130b6dacfae9",
+            position: 1,
+          },
+          {
+            id: "5c92fcf5-93b1-4fd0-9ceb-569d39f57ccf",
+            status: "INCOMPLETE",
+            title: "Make presentation",
+            taskId: "00c4f3a3-42e7-42c4-b330-130b6dacfae9",
+            position: 2,
+          },
         ],
-        id: "ee4dd958-4a63-4dfc-8008-b2d1b75ed822",
-      },
-      {
-        columnId: "182ddf58-3864-4a1a-a9a4-31adf9434a53",
-        title: "Task 2",
-        description: "Pranav needs to complete this",
-        subTasks: [
-          { title: "Make presentation", status: "in-completed" },
-          { title: "Make coffee", status: "completed" },
-        ],
-        id: "1eed9f66-6613-410e-9c9f-9c329f88fecf",
       },
     ],
   },
-  "f9d52b53-6cfd-4465-902c-c6c889ff8a46": {
-    name: "In Progress",
-    items: [
-      {
-        columnId: "f9d52b53-6cfd-4465-902c-c6c889ff8a46",
-        title: "Task 3",
-        description: "Someone needs to be completed",
-        subTasks: [
-          { title: "Make presentation", status: "in-completed" },
-          { title: "Make coffee", status: "in-completed" },
-        ],
-        id: "20824c9c-6c11-4ceb-ab25-6fb16e02956a",
-      },
-    ],
+  "8e36b133-0b8f-41fc-b9fb-a501dcff00ed": {
+    name: "In progress",
+    items: [],
+  },
+  "779661e6-06fe-4ed1-9f8f-717f699df1cb": {
+    name: "Done",
+    items: [],
   },
 };
 

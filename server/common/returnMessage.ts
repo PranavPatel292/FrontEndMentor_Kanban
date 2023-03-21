@@ -1,6 +1,6 @@
 export interface successMessage {
   message: string;
-  data?: Object;
+  data?: Object | undefined;
 }
 
 export interface errorMessage {

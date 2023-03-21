@@ -4,18 +4,18 @@ import { Request, Response, NextFunction } from "express";
 import * as yup from "yup";
 
 const schema = yup.object().shape({
-  columnId: yup.string().required(),
+  taskId: yup.string().required(),
 });
 
-export const validateColumnId = async (
+export const validateTaskId = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { columnId } = req.body;
+  const taskId = req.query["taskId"] as string;
 
   try {
-    await schema.validate(req.body);
+    await schema.validate({ taskId: taskId });
   } catch (error: any) {
     const response: errorMessage = {
       message: error.message,
@@ -24,15 +24,15 @@ export const validateColumnId = async (
     return;
   }
 
-  const result = await prisma.columns.findFirst({
+  const result = await prisma.task.findFirst({
     where: {
-      id: columnId,
+      id: taskId,
     },
   });
 
   if (!result) {
     const response: errorMessage = {
-      message: "columnId is not in the database",
+      message: "Invalid taskId",
     };
     res.status(404).send(response);
     return;

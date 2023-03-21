@@ -14,7 +14,7 @@ interface ColumnItem {
 
 interface ColumnData {
   name: string;
-  item: ColumnItem[];
+  items: ColumnItem[];
 }
 export interface BoardData {
   [columnId: string]: ColumnData;

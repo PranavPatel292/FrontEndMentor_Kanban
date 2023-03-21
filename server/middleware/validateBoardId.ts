@@ -15,7 +15,7 @@ export const validateBoardId = async (
   const boardId = req.query["boardId"] as string;
 
   try {
-    await schema.validate(boardId);
+    await schema.validate({ boardId: boardId });
   } catch (error: any) {
     const response: errorMessage = {
       message: error.message,

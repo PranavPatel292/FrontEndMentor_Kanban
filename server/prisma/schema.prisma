@@ -18,7 +18,7 @@ model User{
 
 model Board{
   id String @id @default(uuid())
-  name String
+  name String @unique
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
   columns Columns[] 

@@ -4,7 +4,11 @@ import { AddColumn } from "./AddColumn";
 import { DroppableColumn } from "./DroppableColumn";
 import { indicatorColor } from "./indicatorColor";
 import { useMutation, useQuery } from "react-query";
-import { getAllColumns, moveWithInTheColumns } from "../../requests/column";
+import {
+  getAllColumns,
+  moveDataInterColumn,
+  moveWithInTheColumns,
+} from "../../requests/column";
 
 interface WithInColumRequest {
   id: string;
@@ -13,7 +17,10 @@ interface WithInColumRequest {
 
 export const ListsContainer = () => {
   const [columns, setColumns] = useState(null);
+
   const { mutate: moveWithInTheColumnMutate } = moveWithInTheColumns();
+
+  const { mutate: moveDataInterColumnMutate } = moveDataInterColumn();
 
   const { data, isLoading, error } = useQuery(
     ["allColumnData"],
@@ -29,11 +36,13 @@ export const ListsContainer = () => {
     setColumns: any,
     provided: any
   ) => {
-    const thresholds = 50;
-
     const { source, destination } = result;
 
     if (!result.destination) return;
+
+    const prevData = columns;
+
+    // TODO: check for what to do when you have error;
 
     if (source.droppableId !== destination.droppableId) {
       const sourceColumn = columns[source.droppableId];
@@ -43,6 +52,23 @@ export const ListsContainer = () => {
       const [remove] = sourceItems.splice(source.index, 1);
       destItems.splice(destination.index, 0, remove);
 
+      const data = {
+        destinationColumnId: destination.droppableId,
+        sourceColumnId: source.droppableId,
+        sourceColData: sourceItems.map((item) => {
+          return { id: item.id, position: item.position };
+        }),
+        destinationColData: destItems.map((item) => {
+          return { id: item.id, position: item.position };
+        }),
+      };
+
+      moveDataInterColumnMutate(data, {
+        onError: (err: any) => {
+          // TODO: make a toast error message
+          setColumns(prevData);
+        },
+      });
       setColumns({
         ...columns,
         [source.droppableId]: {
@@ -67,17 +93,17 @@ export const ListsContainer = () => {
       });
 
       moveWithInTheColumnMutate(data, {
-        onSuccess: () => {
-          setColumns({
-            ...columns,
-            [source.droppableId]: {
-              ...column,
-              items: copiedItems,
-            },
-          });
-        },
         onError: (err: any) => {
           // TODO: make a toast error message
+          setColumns(prevData);
+        },
+      });
+
+      setColumns({
+        ...columns,
+        [source.droppableId]: {
+          ...column,
+          items: copiedItems,
         },
       });
     }
@@ -102,7 +128,9 @@ export const ListsContainer = () => {
                   id={id}
                   indicatorColor={
                     indicatorColor[
-                      Math.floor(index + 1 / data?.data.data.length)
+                      Math.floor(
+                        index + 1 / Object.keys(data?.data.data).length
+                      )
                     ]
                   }
                   index={index}

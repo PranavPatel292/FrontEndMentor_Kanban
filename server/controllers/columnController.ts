@@ -194,15 +194,13 @@ export const moveInterDataColumn = async (req: Request, res: Response) => {
       sourceColumnId,
       sourceColData,
       destinationColData,
-    } = req.body;
+    } = req.body.data;
 
     if (
       !destinationColumnId ||
       !sourceColumnId ||
       !sourceColData ||
-      sourceColData.length === 0 ||
-      !destinationColData ||
-      destinationColData.length === 0
+      !destinationColData
     ) {
       const response: errorMessage = {
         message: "bad request",
@@ -219,7 +217,7 @@ export const moveInterDataColumn = async (req: Request, res: Response) => {
         },
         data: {
           columnId: sourceColumnId,
-          position: sourceColData[i].position + 1,
+          position: i + 1,
         },
       });
     }
@@ -232,7 +230,7 @@ export const moveInterDataColumn = async (req: Request, res: Response) => {
         },
         data: {
           columnId: destinationColumnId,
-          position: destinationColData[i].position + 1,
+          position: i + 1,
         },
       });
     }
@@ -247,6 +245,7 @@ export const moveInterDataColumn = async (req: Request, res: Response) => {
     const response: errorMessage = {
       message: "Something went wrong",
     };
+    console.log(response);
     res.status(500).send(response);
   }
 };

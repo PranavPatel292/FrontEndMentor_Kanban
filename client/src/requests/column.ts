@@ -16,4 +16,8 @@ export const moveWithInTheColumns = () => {
   });
 };
 
-export const moveInterDataColumn = () => {};
+export const moveDataInterColumn = () => {
+  return useMutation((data: any) => {
+    return api.post("/column/moveDataInterColumns", { data });
+  });
+};

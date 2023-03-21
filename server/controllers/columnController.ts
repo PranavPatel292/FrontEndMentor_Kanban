@@ -91,7 +91,7 @@ export const getAllColumnsName = async (req: Request, res: Response) => {
 // TODO: use yup for validation purposes
 export const createColumn = async (req: Request, res: Response) => {
   try {
-    const { name } = req.body;
+    const { name } = req.body.data;
 
     const boardId = req.query["boardId"] as string;
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DragDropContext, Draggable } from "react-beautiful-dnd";
 import { AddColumn } from "./AddColumn";
 import { DroppableColumn } from "./DroppableColumn";
@@ -29,6 +29,11 @@ export const ListsContainer = () => {
       staleTime: 1000,
     }
   );
+
+  // TODO: remove this useEffect
+  useEffect(() => {
+    setColumns(data?.data.data);
+  }, [data]);
 
   const onDragEnd = (
     result: any,
@@ -108,10 +113,6 @@ export const ListsContainer = () => {
       });
     }
   };
-
-  if (data && !columns) {
-    setColumns(data.data.data);
-  }
 
   return (
     <>

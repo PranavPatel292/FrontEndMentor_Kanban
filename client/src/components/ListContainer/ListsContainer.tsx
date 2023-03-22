@@ -51,10 +51,8 @@ export const ListsContainer = () => {
 
     // TODO: check for what to do when you have error;
 
-    if (
-      source.droppableId !== destination.droppableId &&
-      source.index !== destination.index
-    ) {
+    console.log(source, destination);
+    if (source.droppableId !== destination.droppableId) {
       const sourceColumn = columns[source.droppableId];
       const destColumn = columns[destination.droppableId];
       const sourceItems = [...sourceColumn.items];

@@ -47,9 +47,14 @@ export const ListsContainer = () => {
 
     const prevData = columns;
 
+    const threshold = 50;
+
     // TODO: check for what to do when you have error;
 
-    if (source.droppableId !== destination.droppableId) {
+    if (
+      source.droppableId !== destination.droppableId &&
+      source.index !== destination.index
+    ) {
       const sourceColumn = columns[source.droppableId];
       const destColumn = columns[destination.droppableId];
       const sourceItems = [...sourceColumn.items];
@@ -85,7 +90,7 @@ export const ListsContainer = () => {
           items: destItems,
         },
       });
-    } else {
+    } else if (source.index !== destination.index) {
       const column = columns[source.droppableId];
       const copiedItems = [...column.items];
       const [removed] = copiedItems.splice(source.index, 1);

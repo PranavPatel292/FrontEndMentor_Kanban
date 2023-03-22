@@ -6,3 +6,14 @@ export const createTask = () => {
     return api.post("/task", { data });
   });
 };
+
+export const deleteTask = () => {
+  return useMutation((data: any) => {
+    return api.delete("/task?taskId", {
+      params: {
+        taskId: data.taskId,
+      },
+      data: { data: { columnId: data.columnId } },
+    });
+  });
+};

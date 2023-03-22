@@ -1,4 +1,4 @@
-import { Formik, Form, Field, FieldArray } from "formik";
+import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
 import { useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
 import ReactModal from "react-modal";
@@ -6,6 +6,8 @@ import { RxCross2 } from "react-icons/rx";
 import { getColumnNames } from "../../requests/column";
 import { useQuery, useQueryClient } from "react-query";
 import { createTask } from "../../requests/task";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface ModalProps {
   isOpen: boolean;
@@ -18,6 +20,13 @@ const subTasksPlaceHolders = [
   "assign task",
   "scheduler interview",
 ];
+
+const taskValidationSchema = Yup.object().shape({
+  title: Yup.string().min(1).required("Please provide title"),
+  description: Yup.string().min(1).required("Please provide description"),
+  columnId: Yup.string().required("Please provide columnId"),
+  subTasks: Yup.array().of(Yup.string().required("Can't be empty")).required(),
+});
 
 // TODO: scroll to the last position of subtasks
 export const CreateTaskModal = ({ isOpen, onRequestClose }: ModalProps) => {
@@ -56,8 +65,8 @@ export const CreateTaskModal = ({ isOpen, onRequestClose }: ModalProps) => {
                 description: "",
                 columnId: columnsName[0].id,
               }}
+              validationSchema={taskValidationSchema}
               onSubmit={(values, { resetForm }) => {
-                console.log(values);
                 const data = {
                   ...values,
                   subTasks: values.subTasks.map((value: any, index) => {
@@ -66,11 +75,29 @@ export const CreateTaskModal = ({ isOpen, onRequestClose }: ModalProps) => {
                 };
                 mutate(data, {
                   onSuccess: () => {
-                    // TODO: show success toast
+                    toast.success("Data inserted successfully", {
+                      position: "top-right",
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "dark",
+                    });
                     resetForm();
                   },
                   onError: () => {
-                    // TODO: show error toast
+                    toast.error("Sorry something went wrong", {
+                      position: "top-right",
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "dark",
+                    });
                   },
                   onSettled: () => {
                     queryClient.invalidateQueries("allColumnData");
@@ -78,7 +105,7 @@ export const CreateTaskModal = ({ isOpen, onRequestClose }: ModalProps) => {
                 });
               }}
             >
-              {({ values }) => (
+              {({ values, errors, touched, isValid }) => (
                 <Form>
                   <div className="flex flex-col space-y-5">
                     <div className="flex flex-col space-y-2">
@@ -90,6 +117,11 @@ export const CreateTaskModal = ({ isOpen, onRequestClose }: ModalProps) => {
                         placeholder="eg: take coffee break"
                         className="bg-darkGrey border border-lines text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       />
+                      {errors.title && touched.title ? (
+                        <p className="text-center p-0 text-[#FC1111] font-[500] text-sm   leading-[27px]">
+                          {errors.title}
+                        </p>
+                      ) : null}
                     </div>
 
                     <div className="flex flex-col space-y-2">
@@ -101,6 +133,11 @@ export const CreateTaskModal = ({ isOpen, onRequestClose }: ModalProps) => {
                         placeholder={`e.g. It’s always good to take a break.\n`}
                         className="bg-darkGrey border h-20 placeholder:italic placeholder:truncate border-lines text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       />
+                      {errors.description && touched.description ? (
+                        <p className="text-center p-0 text-[#FC1111] font-[500] text-sm   leading-[27px]">
+                          {errors.description}
+                        </p>
+                      ) : null}
                     </div>
 
                     <div className="flex flex-col space-y-2  ">
@@ -113,27 +150,40 @@ export const CreateTaskModal = ({ isOpen, onRequestClose }: ModalProps) => {
                           <div>
                             {/* TODO: make last element in focus */}
                             <div className="max-h-[100px] overflow-y-scroll">
-                              {values.subTasks.map((field, index) => (
-                                <div
-                                  key={index}
-                                  className="flex flex-row space-x-5 overflow-y-scroll justify-center items-center"
-                                >
-                                  <Field
-                                    placeholder={`eg: ${
-                                      subTasksPlaceHolders[
-                                        index % subTasksPlaceHolders.length
-                                      ]
-                                    } `}
-                                    className="bg-darkGrey border mb-2 text-white border-lines  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    name={`subTasks.${index}`}
-                                  />
-                                  <RxCross2
-                                    color={"red"}
-                                    size="25px"
-                                    onClick={() => {
-                                      remove(index);
-                                    }}
-                                  />
+                              {values.subTasks.map((_, index) => (
+                                <div>
+                                  <div
+                                    key={index}
+                                    className="flex flex-row space-x-5 overflow-y-scroll justify-center items-center"
+                                  >
+                                    <Field
+                                      placeholder={`eg: ${
+                                        subTasksPlaceHolders[
+                                          index % subTasksPlaceHolders.length
+                                        ]
+                                      } ${
+                                        errors.subTasks && touched.subTasks
+                                          ? "text-red"
+                                          : ""
+                                      } `}
+                                      className={`bg-darkGrey border mb-2 text-white border-lines  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                                      name={`subTasks.${index}`}
+                                    />
+
+                                    <RxCross2
+                                      color={"red"}
+                                      size="25px"
+                                      onClick={() => {
+                                        remove(index);
+                                      }}
+                                    />
+
+                                    <ErrorMessage
+                                      component="p"
+                                      name={`subTasks.${index}`}
+                                      className="text-red text-sm min-w-[150px] text-right"
+                                    />
+                                  </div>
                                 </div>
                               ))}
                             </div>
@@ -184,6 +234,17 @@ export const CreateTaskModal = ({ isOpen, onRequestClose }: ModalProps) => {
             </Formik>
           )}
         </div>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
       </ReactModal>
     </>
   );

@@ -12,10 +12,10 @@ export const validateSubTaskId = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { subTaskId } = req.body;
+  const { subTaskId } = req.body.data;
 
   try {
-    await schema.validate(req.body);
+    await schema.validate({ subTaskId });
   } catch (error: any) {
     const response: errorMessage = {
       message: error.message,

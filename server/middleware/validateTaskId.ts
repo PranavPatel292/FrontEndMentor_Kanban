@@ -16,7 +16,7 @@ export const validateTaskId = async (
   const taskId = req.query["taskId"] as string;
 
   try {
-    await schema.validate({ taskId: taskId });
+    await schema.validate({ taskId: taskId[1] });
   } catch (error: any) {
     const response: errorMessage = {
       message: error.message,
@@ -27,7 +27,7 @@ export const validateTaskId = async (
 
   const result = await prisma.task.findFirst({
     where: {
-      id: taskId,
+      id: taskId[1],
     },
   });
 
@@ -48,7 +48,7 @@ export const validateMultipleTaskIds = async (
   next: NextFunction
 ) => {
   const { data } = req.body;
-
+  console.log(data);
   try {
     for (let i = 0; i < data.length; ++i) {
       await schema.validate({

@@ -148,15 +148,44 @@ export const createTask = async (req: Request, res: Response) => {
 export const deleteTask = async (req: Request, res: Response) => {
   try {
     const taskId = req.query["taskId"] as string;
-    const { columnId } = req.body;
+    const { columnId } = req.body.data;
 
     const result = await prisma.task.delete({
       where: {
-        id: taskId,
+        id: taskId[1],
       },
     });
 
     await decrementEachPosition(columnId);
+    const response: successMessage = {
+      message: "returned specified task",
+      data: result,
+    };
+
+    res.status(200).send(response);
+    return;
+  } catch (error) {
+    const response: errorMessage = {
+      message: "Something went wrong",
+    };
+    res.status(500).send(response);
+  }
+};
+
+export const updateSubTaskStatus = async (req: Request, res: Response) => {
+  try {
+    const { status, subTaskId } = req.body.data;
+
+    console.log("hgello");
+    const result = await prisma.subTask.update({
+      where: {
+        id: subTaskId,
+      },
+      data: {
+        status: status,
+      },
+    });
+
     const response: successMessage = {
       message: "returned specified task",
       data: result,

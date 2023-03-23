@@ -3,7 +3,7 @@ import { validateColumnId } from "./../middleware/validateColumnId";
 import { validateTaskId } from "./../middleware/validateTaskId";
 const router = require("express").Router();
 
-router.get("/", validateColumnId, validateTaskId);
+router.get("/", validateTaskId);
 
 // pass columnId in request body
 router.post("/", validateColumnId, createTask);
@@ -12,6 +12,5 @@ router.post("/", validateColumnId, createTask);
 router.delete("/", validateTaskId, validateColumnId, deleteTask);
 
 // TODO: made updateTask functionality
-router.put("/", validateTaskId);
 
 module.exports = router;

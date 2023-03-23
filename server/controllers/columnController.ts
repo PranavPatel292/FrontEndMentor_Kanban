@@ -1,4 +1,4 @@
-import { BoardData } from "../common/BoardData";
+import { BoardData } from "./../common/types";
 import { prisma } from "../prisma/prismaClient";
 import { Request, Response } from "express";
 import { errorMessage, successMessage } from "../common/returnMessage";
@@ -91,7 +91,7 @@ export const getAllColumnsName = async (req: Request, res: Response) => {
 // TODO: use yup for validation purposes
 export const createColumn = async (req: Request, res: Response) => {
   try {
-    const { name } = req.body.data;
+    const { name } = req.body;
 
     const boardId = req.query["boardId"] as string;
 
@@ -152,100 +152,6 @@ export const deleteColumn = async (req: Request, res: Response) => {
     const response: errorMessage = {
       message: "Something went wrong",
     };
-    res.status(500).send(response);
-  }
-};
-
-// TODO: use yup for validation purposes
-export const moveWithInTheColumn = async (req: Request, res: Response) => {
-  try {
-    const { data } = req.body;
-
-    for (let i = 0; i < data.length; i++) {
-      await prisma.task.update({
-        where: {
-          id: data[i].taskId,
-        },
-        data: {
-          // assuming the 0th index value
-          position: data[i].position + 1,
-        },
-      });
-    }
-
-    const response: successMessage = {
-      message: "updated column",
-    };
-
-    res.status(200).send(response);
-  } catch (error) {
-    console.log(error);
-    const response: errorMessage = {
-      message: "Something went wrong",
-    };
-    res.status(500).send(response);
-  }
-};
-
-export const moveInterDataColumn = async (req: Request, res: Response) => {
-  try {
-    const {
-      destinationColumnId,
-      sourceColumnId,
-      sourceColData,
-      destinationColData,
-    } = req.body.data;
-
-    if (
-      !destinationColumnId ||
-      !sourceColumnId ||
-      !sourceColData ||
-      !destinationColData
-    ) {
-      const response: errorMessage = {
-        message: "bad request",
-      };
-      res.status(400).send(response);
-      return;
-    }
-
-    // update all source column data
-    for (let i = 0; i < sourceColData.length; ++i) {
-      await prisma.task.update({
-        where: {
-          id: sourceColData[i].id,
-        },
-        data: {
-          columnId: sourceColumnId,
-          position: i + 1,
-        },
-      });
-    }
-
-    // update all destination column data
-    for (let i = 0; i < destinationColData.length; ++i) {
-      await prisma.task.update({
-        where: {
-          id: destinationColData[i].id,
-        },
-        data: {
-          columnId: destinationColumnId,
-          position: i + 1,
-        },
-      });
-    }
-
-    const response: successMessage = {
-      message: "data moved",
-      data: [],
-    };
-
-    res.status(200).send(response);
-  } catch (error) {
-    const response: errorMessage = {
-      message: "Something went wrong",
-    };
-    console.log(response);
     res.status(500).send(response);
   }
 };

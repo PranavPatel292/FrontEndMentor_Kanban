@@ -5,7 +5,6 @@ import * as yup from "yup";
 
 const schema = yup.object().shape({
   taskId: yup.string().required(),
-  position: yup.number().optional(),
 });
 
 export const validateTaskId = async (
@@ -37,39 +36,6 @@ export const validateTaskId = async (
     };
     res.status(404).send(response);
     return;
-  }
-
-  next();
-};
-
-export const validateMultipleTaskIds = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { data } = req.body;
-
-  try {
-    for (let i = 0; i < data.length; ++i) {
-      await schema.validate({
-        taskId: data[i].taskId,
-        position: data[i].position,
-      });
-    }
-  } catch (error: any) {
-    const response: errorMessage = {
-      message: error.message,
-    };
-    res.status(400).send(response);
-    return;
-  }
-
-  for (let i = 0; i < data.length; ++i) {
-    await prisma.task.findFirst({
-      where: {
-        id: data[i].taskId,
-      },
-    });
   }
 
   next();

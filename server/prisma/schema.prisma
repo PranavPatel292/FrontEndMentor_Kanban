@@ -45,6 +45,7 @@ model Task{
   updateAt DateTime @updatedAt
   subTask SubTask[]
 
+  @@unique([columnId, position])
 }
 
 model SubTask{

@@ -12,10 +12,10 @@ export const validateColumnId = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { columnId } = req.body;
+  const { columnId } = req.body.data;
 
   try {
-    await schema.validate(req.body);
+    await schema.validate({ columnId });
   } catch (error: any) {
     const response: errorMessage = {
       message: error.message,

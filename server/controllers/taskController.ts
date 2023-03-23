@@ -79,7 +79,7 @@ export const getTask = async (req: Request, res: Response) => {
 
 export const createTask = async (req: Request, res: Response) => {
   try {
-    const { title, description, subTasks, columnId } = req.body;
+    const { title, description, subTasks, columnId } = req.body.data;
 
     try {
       await createTaskSchema.validate({
@@ -95,7 +95,6 @@ export const createTask = async (req: Request, res: Response) => {
       res.status(400).send(response);
       return;
     }
-
     const result = await prisma.$transaction(async () => {
       // count the total number
       const totalRecords = await prisma.task.count({

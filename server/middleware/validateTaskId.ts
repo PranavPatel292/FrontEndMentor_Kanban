@@ -48,7 +48,7 @@ export const validateMultipleTaskIds = async (
   next: NextFunction
 ) => {
   const { data } = req.body;
-  console.log(data);
+
   try {
     for (let i = 0; i < data.length; ++i) {
       await schema.validate({

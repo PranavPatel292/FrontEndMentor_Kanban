@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { DragDropContext, Draggable } from "react-beautiful-dnd";
+import { DragDropContext } from "react-beautiful-dnd";
 import { AddColumn } from "./AddColumn";
 import { DroppableColumn } from "./DroppableColumn";
 import { indicatorColor } from "./indicatorColor";
-import { useMutation, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import {
   getAllColumns,
   moveDataInterColumn,
@@ -11,7 +11,7 @@ import {
 } from "../../requests/column";
 
 interface WithInColumRequest {
-  id: string;
+  taskId: string;
   position: number;
 }
 
@@ -42,16 +42,9 @@ export const ListsContainer = () => {
     provided: any
   ) => {
     const { source, destination } = result;
-
     if (!result.destination) return;
-
     const prevData = columns;
-
-    const threshold = 50;
-
     // TODO: check for what to do when you have error;
-
-    console.log(source, destination);
     if (source.droppableId !== destination.droppableId) {
       const sourceColumn = columns[source.droppableId];
       const destColumn = columns[destination.droppableId];
@@ -60,6 +53,7 @@ export const ListsContainer = () => {
       const [remove] = sourceItems.splice(source.index, 1);
       destItems.splice(destination.index, 0, remove);
 
+      // prepare data to send to server
       const data = {
         destinationColumnId: destination.droppableId,
         sourceColumnId: source.droppableId,
@@ -74,9 +68,12 @@ export const ListsContainer = () => {
       moveDataInterColumnMutate(data, {
         onError: (err: any) => {
           // TODO: make a toast error message
+          // if error then go back to the previous state data
           setColumns(prevData);
+          return;
         },
       });
+
       setColumns({
         ...columns,
         [source.droppableId]: {
@@ -94,16 +91,18 @@ export const ListsContainer = () => {
       const [removed] = copiedItems.splice(source.index, 1);
       copiedItems.splice(destination.index, 0, removed);
 
-      const data: any = [];
-
+      // prepare data to send to server
+      const data: Array<WithInColumRequest> = [];
       copiedItems.map((item, index) => {
         data.push({ taskId: item.id, position: index });
       });
 
       moveWithInTheColumnMutate(data, {
-        onError: (err: any) => {
+        onError: () => {
           // TODO: make a toast error message
+          // if error then go back to the previous state data
           setColumns(prevData);
+          return;
         },
       });
 

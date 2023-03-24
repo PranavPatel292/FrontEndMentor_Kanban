@@ -176,7 +176,6 @@ export const updateSubTaskStatus = async (req: Request, res: Response) => {
   try {
     const { status, subTaskId } = req.body.data;
 
-    console.log("hgello");
     const result = await prisma.subTask.update({
       where: {
         id: subTaskId,

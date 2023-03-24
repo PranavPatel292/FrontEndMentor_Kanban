@@ -12,7 +12,6 @@ export const validateColumnId = async (
   res: Response,
   next: NextFunction
 ) => {
-  console.log(req.body);
   const { columnId } = req.body.data;
 
   try {

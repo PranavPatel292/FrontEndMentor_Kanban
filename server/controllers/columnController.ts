@@ -2,6 +2,21 @@ import { BoardData } from "../common/BoardData";
 import { prisma } from "../prisma/prismaClient";
 import { Request, Response } from "express";
 import { errorMessage, successMessage } from "../common/returnMessage";
+import * as yup from "yup";
+
+const createColumnSchema = yup.object().shape({
+  name: yup.string().required(),
+  boardId: yup.string().required(),
+});
+
+const updateColumnSchema = yup.object().shape({
+  taskId: yup.string().required(),
+  position: yup.number().required(),
+});
+
+const updateColumnSchemaArray = yup.object().shape({
+  data: yup.array().of(updateColumnSchema).required(),
+});
 
 export const getAllColumns = async (req: Request, res: Response) => {
   try {
@@ -88,16 +103,17 @@ export const getAllColumnsName = async (req: Request, res: Response) => {
   }
 };
 
-// TODO: use yup for validation purposes
 export const createColumn = async (req: Request, res: Response) => {
   try {
     const { name } = req.body.data;
 
     const boardId = req.query["boardId"] as string;
 
-    if (!boardId || !name || boardId === "undefined") {
+    try {
+      await createColumnSchema.validate({ name, boardId });
+    } catch (error: any) {
       const response: errorMessage = {
-        message: "no boardId or name provided",
+        message: error.message,
       };
       res.status(400).send(response);
       return;
@@ -156,10 +172,19 @@ export const deleteColumn = async (req: Request, res: Response) => {
   }
 };
 
-// TODO: use yup for validation purposes
 export const moveWithInTheColumn = async (req: Request, res: Response) => {
   try {
     const { data } = req.body;
+
+    try {
+      await updateColumnSchemaArray.validate(data);
+    } catch (error: any) {
+      const response: errorMessage = {
+        message: error.message,
+      };
+      res.status(400).send(response);
+      return;
+    }
 
     for (let i = 0; i < data.length; i++) {
       await prisma.task.update({

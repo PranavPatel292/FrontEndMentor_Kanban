@@ -3,29 +3,29 @@ import { Draggable } from "react-beautiful-dnd";
 import { useLongPress } from "use-long-press";
 import Swal from "sweetalert2";
 import "@sweetalert2/theme-dark/dark.css";
-import type { SweetAlertOptions } from "sweetalert2";
 import { deleteTask } from "../../requests/task";
-import { ToastContainer, toast } from "react-toastify";
 import { useQueryClient } from "react-query";
-import { ShowItemModal } from "../Modals/ShowItemModal";
+import { ShowItem } from "../Modals/ShowItem";
+import { showToast } from "../Common/Toast";
 
 interface DraggableItemProps {
   index: number;
   item: any;
 }
+
 export const DraggableItem = ({ index, item }: DraggableItemProps) => {
   const [isLongPress, setIsLongPress] = useState(false);
   const queryClient = useQueryClient();
+
   const completedSubTasks = item.subTask?.filter((subtask: any) => {
     return subtask.status === "COMPLETE";
   });
 
   const [showItemModalOpen, setShowItemModalOpen] = useState(false);
-
   const customClass = `
   bg-darkGrey
   text-white
-`;
+  `;
 
   const { mutate } = deleteTask();
 
@@ -47,28 +47,10 @@ export const DraggableItem = ({ index, item }: DraggableItemProps) => {
     if (result.isConfirmed) {
       mutate(data, {
         onSuccess: () => {
-          toast.success("Data inserted successfully", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
+          showToast.success("Data deleted successfully");
         },
         onError: () => {
-          toast.error("Sorry something went wrong", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-          });
+          showToast.error("Sorry something went wrong");
         },
         onSettled: () => {
           queryClient.invalidateQueries("allColumnData");
@@ -81,20 +63,22 @@ export const DraggableItem = ({ index, item }: DraggableItemProps) => {
   const onRequestClose = () => {
     setShowItemModalOpen(false);
   };
+
   const handleOnClick = () => {
     if (!isLongPress) setShowItemModalOpen(true);
   };
 
   const bind = useLongPress(() => {}, {
-    onFinish: (event, meta: any) => {
+    onStart: () => {
       setIsLongPress(true);
-      showAlert(meta.context);
-      //console.log("delete this item", meta.context, isLongPressActive);
+    },
+    onFinish: (_, { context }) => {
+      showAlert(context);
     },
     onCancel: () => {
-      console.log("onCancel");
+      setIsLongPress(false);
     },
-    filterEvents: (event) => true, // All events can potentially trigger long press
+    filterEvents: (event) => true,
     threshold: 300,
     captureEvent: true,
     cancelOnMovement: false,
@@ -102,21 +86,23 @@ export const DraggableItem = ({ index, item }: DraggableItemProps) => {
 
   return (
     <>
-      {showItemModalOpen && (
-        <ShowItemModal
-          items={item}
-          isOpen={showItemModalOpen}
-          onRequestClose={onRequestClose}
-        />
-      )}
+      <ShowItem
+        items={item}
+        isOpen={showItemModalOpen}
+        onRequestClose={onRequestClose}
+      />
+
       <Draggable draggableId={item.id} key={item.id} index={index}>
-        {(provided, snapshot) => {
+        {(provided) => {
           return (
             <div
               ref={provided.innerRef}
               {...provided.dragHandleProps}
               {...provided.draggableProps}
-              {...bind({ taskId: item.id, columnId: item.columnId })}
+              {...bind({
+                taskId: item.id,
+                columnId: item.columnId,
+              })}
               onClick={handleOnClick}
             >
               <li
@@ -137,17 +123,6 @@ export const DraggableItem = ({ index, item }: DraggableItemProps) => {
           );
         }}
       </Draggable>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
     </>
   );
 };

@@ -1,0 +1,30 @@
+import React from "react";
+import ReactModal from "react-modal";
+
+interface ModalProps {
+  isOpen: boolean;
+  onRequestClose: () => void;
+  children: React.ReactNode;
+  className: string;
+}
+export const Modal = ({
+  isOpen,
+  onRequestClose,
+  children,
+  className,
+}: ModalProps) => {
+  return (
+    <>
+      <ReactModal
+        isOpen={isOpen}
+        onRequestClose={onRequestClose}
+        shouldCloseOnOverlayClick={true}
+        shouldCloseOnEsc={true}
+        className={className}
+        overlayClassName="fixed inset-0 bg-black opacity-95"
+      >
+        {children}
+      </ReactModal>
+    </>
+  );
+};

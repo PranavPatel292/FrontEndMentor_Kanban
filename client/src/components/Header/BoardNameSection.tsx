@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CreateTaskModal } from "../Modals/CreateTaskModal";
+import { CreateTask } from "../Modals/CreateTask";
 
 export const BoardNameSection = () => {
   const [isOpenTaskModal, setIsOpenTaskModal] = useState(false);
@@ -8,17 +8,10 @@ export const BoardNameSection = () => {
     setIsOpenTaskModal(false);
   };
 
-  useEffect(() => {
-    console.log(isOpenTaskModal);
-  }, [isOpenTaskModal]);
   return (
     <>
-      {isOpenTaskModal && (
-        <CreateTaskModal
-          isOpen={isOpenTaskModal}
-          onRequestClose={closeTaskModal}
-        />
-      )}
+      <CreateTask isOpen={isOpenTaskModal} onRequestClose={closeTaskModal} />
+
       <div className="w-full flex flex-row px-4 md:px-8 items-center">
         <div className="w-full flex flex-row  items-center justify-between">
           <h1 className="text-xl max-w-[200px] md:max-w-[400px] truncate md:text-2xl text-white font-bold leading-7">

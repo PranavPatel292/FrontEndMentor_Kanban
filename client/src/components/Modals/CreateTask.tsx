@@ -6,8 +6,9 @@ import { RxCross2 } from "react-icons/rx";
 import { getColumnNames } from "../../requests/column";
 import { useQuery, useQueryClient } from "react-query";
 import { createTask } from "../../requests/task";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Modal } from "./Modal";
 
 interface ModalProps {
   isOpen: boolean;
@@ -29,8 +30,11 @@ const taskValidationSchema = Yup.object().shape({
 });
 
 // TODO: scroll to the last position of subtasks
-export const CreateTaskModal = ({ isOpen, onRequestClose }: ModalProps) => {
+export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
   const [columnsName, setColumnNames]: any = useState(null);
+
+  const className =
+    "absolute top-1/2  left-1/2 transform -translate-x-1/2  -translate-y-1/2 bg-darkBG rounded-lg p-8 h-[343px] w-[659px] md:min-h-[675px] md:min-w-[480px]";
 
   const { data } = useQuery(["allColumnsNames"], getColumnNames, {
     staleTime: 1000,
@@ -45,15 +49,11 @@ export const CreateTaskModal = ({ isOpen, onRequestClose }: ModalProps) => {
   }, [data]);
 
   return (
-    <>
-      <ReactModal
-        isOpen={isOpen}
-        onRequestClose={onRequestClose}
-        shouldCloseOnOverlayClick={true}
-        shouldCloseOnEsc={true}
-        className="absolute top-1/2  left-1/2 transform -translate-x-1/2  -translate-y-1/2 bg-darkBG rounded-lg p-8 h-[343px] w-[659px] md:min-h-[675px] md:min-w-[480px]"
-        overlayClassName="fixed inset-0 bg-black opacity-95"
-      >
+    <Modal
+      className={className}
+      isOpen={isOpen}
+      onRequestClose={onRequestClose}
+      children={
         <div className="flex flex-col p-8 space-y-5">
           <h1 className="text-white leading-[22.68px] text-xl">Add new task</h1>
 
@@ -105,7 +105,7 @@ export const CreateTaskModal = ({ isOpen, onRequestClose }: ModalProps) => {
                 });
               }}
             >
-              {({ values, errors, touched, isValid }) => (
+              {({ values, errors, touched }) => (
                 <Form>
                   <div className="flex flex-col space-y-5">
                     <div className="flex flex-col space-y-2">
@@ -146,16 +146,13 @@ export const CreateTaskModal = ({ isOpen, onRequestClose }: ModalProps) => {
                       </label>
 
                       <FieldArray name="subTasks">
-                        {({ insert, remove, push }) => (
+                        {({ remove, push }) => (
                           <div>
                             {/* TODO: make last element in focus */}
                             <div className="max-h-[100px] overflow-y-scroll">
                               {values.subTasks.map((_, index) => (
-                                <div>
-                                  <div
-                                    key={index}
-                                    className="flex flex-row space-x-5 overflow-y-scroll justify-center items-center"
-                                  >
+                                <div key={index}>
+                                  <div className="flex flex-row space-x-5 overflow-y-scroll justify-center items-center">
                                     <Field
                                       placeholder={`eg: ${
                                         subTasksPlaceHolders[
@@ -234,18 +231,7 @@ export const CreateTaskModal = ({ isOpen, onRequestClose }: ModalProps) => {
             </Formik>
           )}
         </div>
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
-      </ReactModal>
-    </>
+      }
+    />
   );
 };

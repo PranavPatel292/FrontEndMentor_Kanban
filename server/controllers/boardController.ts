@@ -1,15 +1,25 @@
 import { prisma } from "../prisma/prismaClient";
 import { Request, Response } from "express";
 import { errorMessage, successMessage } from "../common/returnMessage";
+import * as yup from "yup";
 
-// TODO:- yup validation
+const createBoardSchema = yup.object().shape({
+  name: yup.string().required(),
+});
+
+const deleteBoardSchema = yup.object().shape({
+  boardId: yup.string().required(),
+});
+
 export const getAllBoards = async (req: Request, res: Response) => {
   try {
     const result = await prisma.board.findMany();
+
     const response: successMessage = {
       message: "returned all boards",
       data: result,
     };
+
     res.status(200).send(response);
     return;
   } catch (error) {
@@ -24,9 +34,11 @@ export const createBoard = async (req: Request, res: Response) => {
   try {
     const { name } = req.body;
 
-    if (!name) {
+    try {
+      await createBoardSchema.validate({ name: name });
+    } catch (error: any) {
       const response: errorMessage = {
-        message: "no name provided",
+        message: error.message,
       };
       res.status(400).send(response);
       return;
@@ -57,9 +69,11 @@ export const deleteBoard = async (req: Request, res: Response) => {
   try {
     const boardId = req.query["boardId"] as string;
 
-    if (!boardId || boardId === "undefined") {
+    try {
+      await deleteBoardSchema.validate({ boardId });
+    } catch (error: any) {
       const response: errorMessage = {
-        message: "no boardId provided",
+        message: error.message,
       };
       res.status(400).send(response);
       return;

@@ -3,6 +3,8 @@ import ReactModal from "react-modal";
 import { useQueryClient } from "react-query";
 import { createColumn } from "../../requests/column";
 import * as Yup from "yup";
+import { showToast } from "../Common/Toast";
+import { Modal } from "./Modal";
 
 interface ModalProps {
   isOpen: boolean;
@@ -13,27 +15,17 @@ const ValidationSchema = Yup.object().shape({
   name: Yup.string().required("Please provide name"),
 });
 
-// TODO: solve this error
-// Warning: react-modal: App element is not defined. Please use `Modal.setAppElement(el)` or set `appElement={el}`.
-// This is needed so screen readers don't see main content when modal is opened. It is not recommended, but you can opt-out by setting `ariaHideApp={false}`
-
-export const CreateNewColumnModal = ({
-  isOpen,
-  onRequestClose,
-}: ModalProps) => {
+export const CreateNewColumn = ({ isOpen, onRequestClose }: ModalProps) => {
   const { mutate } = createColumn();
   const queryClient = useQueryClient();
+  const className =
+    "absolute top-1/2  left-1/2 transform -translate-x-1/2  -translate-y-1/2 bg-darkBG rounded-lg p-8 h-[343px] w-[659px] md:min-h-[200px] md:min-w-[480px]";
   return (
-    <>
-      <ReactModal
-        isOpen={isOpen}
-        onRequestClose={onRequestClose}
-        shouldCloseOnOverlayClick={true}
-        ariaHideApp={false}
-        shouldCloseOnEsc={true}
-        className="absolute top-1/2  left-1/2 transform -translate-x-1/2  -translate-y-1/2 bg-darkBG rounded-lg p-8 h-[343px] w-[659px] md:min-h-[200px] md:min-w-[480px]"
-        overlayClassName="fixed inset-0 bg-black opacity-90"
-      >
+    <Modal
+      onRequestClose={onRequestClose}
+      isOpen={isOpen}
+      className={className}
+      children={
         <div className="flex flex-col p-8 space-y-10">
           <h1 className="text-white leading-[22.68px] text-xl">
             Add new column
@@ -44,19 +36,19 @@ export const CreateNewColumnModal = ({
             onSubmit={(values, { resetForm }) => {
               mutate(values, {
                 onSuccess: () => {
+                  showToast.success("New column added");
                   resetForm();
                 },
                 onError: () => {
-                  //TODO: set toast to display error
+                  showToast.error("Something went wrong");
                 },
                 onSettled: () => {
                   queryClient.invalidateQueries("allColumnData");
-                  console.log("hello");
                 },
               });
             }}
           >
-            {({ errors, touched, values }) => (
+            {({ errors, touched }) => (
               <Form>
                 <div className="flex flex-col space-y-10">
                   <div className="flex flex-col space-y-2">
@@ -87,7 +79,7 @@ export const CreateNewColumnModal = ({
             )}
           </Formik>
         </div>
-      </ReactModal>
-    </>
+      }
+    />
   );
 };

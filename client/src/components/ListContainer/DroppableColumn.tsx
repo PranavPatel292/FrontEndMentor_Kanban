@@ -23,7 +23,7 @@ export const DroppableColumn = ({
         </span>
       </p>
       <Droppable droppableId={id} key={id}>
-        {(provided, snapshot) => {
+        {(provided) => {
           return (
             <div {...provided.droppableProps} ref={provided.innerRef}>
               {column.items.map((item: any, index: number) => {

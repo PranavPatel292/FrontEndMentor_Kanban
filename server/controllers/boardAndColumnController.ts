@@ -3,23 +3,25 @@ import { Request, Response } from "express";
 import { errorMessage, successMessage } from "../common/returnMessage";
 import * as yup from "yup";
 
-const columnSchema = yup.object().shape({
+const updateColumnNamesSchema = yup.object().shape({
   id: yup.string().optional(),
   name: yup.string().required(),
 });
 
-const boardSchema = yup.object().shape({
-  boardId: yup.string().required(),
+const updateBoardSchema = yup.object().shape({
   name: yup.string().required(),
-  columnData: yup.array().of(columnSchema),
+  colNames: yup.array().of(updateColumnNamesSchema).required(),
+  boardId: yup.string().required(),
 });
 
-export const updateBoardAndColumn = async (req: Request, res: Response) => {
+// TODO: when the body.data is undefined it should give the 400 error
+export const updateBoard = async (req: Request, res: Response) => {
   try {
-    const { name, columnData, boardId } = req.body;
+    const boardId = req.query["boardId"] as string;
+    const { name, colNames } = req.body.data;
 
     try {
-      await boardSchema.validate({ name: name, columnData: columnData });
+      await updateBoardSchema.validate({ name, colNames, boardId });
     } catch (error: any) {
       const response: errorMessage = {
         message: error.message,
@@ -28,68 +30,118 @@ export const updateBoardAndColumn = async (req: Request, res: Response) => {
       return;
     }
 
-    const existingColumn = await prisma.columns.findMany({
-      where: {
-        id: boardId,
-      },
-      select: {
-        id: true,
-        name: true,
-      },
-    });
-
-    // make a map of the existing columns so we can search fast
-    const existingColumnsById = new Map(
-      existingColumn.map((column: any) => [column.id, name])
-    );
-
-    // filtering out the existing columns
-    const newColumns = columnData.filter(
-      (column: any) => !existingColumnsById.has(column.id)
-    );
-
-    // finding out the updated columns
-    const updatedColumns = columnData.filter(
-      (column: any) =>
-        existingColumnsById.has(column.id) &&
-        existingColumnsById.get(column.id)?.name != column.name
-    );
-
-    // now we will make a transaction to update the  columns
-    const updatedBoard: any = await prisma.$transaction(async () => {
-      // { name: { not: name } },
-      const updateBoard = await prisma.board.update({
+    const result = prisma.$transaction(async () => {
+      const boardData = await prisma.board.findFirst({
         where: {
           id: boardId,
         },
-        data: { name: name },
+        select: {
+          name: true,
+          columns: true,
+        },
       });
 
-      // iterate through the new columns and create a new entry for each column
-      for (const newColumn of newColumns) {
-        await prisma.columns.create({
+      // if the board name is different from the name update the boardName
+      if (boardData?.name !== name) {
+        await prisma.board.update({
+          where: {
+            id: boardId,
+          },
           data: {
-            name: newColumn.name,
-            boardId: boardId,
+            name: name,
           },
         });
       }
 
-      // iterate through the existing columns and update each column
-      for (const updatedColumn of updatedColumns) {
-        await prisma.columns.update({
-          where: { id: updatedColumn.id },
-          data: { name: updatedColumn.name },
+      // find out the new columns that we need to add
+      const newColumns = colNames.filter(
+        (column: any) => column.id === undefined
+      );
+
+      // if the column names are different than the current names
+      const databaseColumns = boardData?.columns;
+
+      const idToNameMap = colNames.reduce((acc: any, curr: any) => {
+        acc[curr.id] = curr.name;
+        return acc;
+      }, {});
+
+      const updateColumns = databaseColumns
+        ?.filter((col: any) => {
+          return idToNameMap[col.id] && idToNameMap[col.id] !== col.name;
+        })
+        .map((col: any) => {
+          return {
+            ...col,
+            name: idToNameMap[col.id],
+          };
         });
+
+      // find the columns that need to be deleted;
+      const deleteColumns = databaseColumns?.filter((column: any) => {
+        return column.id in idToNameMap === false;
+      });
+
+      // add new columns into the database
+      for (let i = 0; i < newColumns.length; ++i) {
+        try {
+          await prisma.columns.create({
+            data: {
+              name: newColumns[i].name,
+              boardId: boardId,
+            },
+          });
+        } catch (error) {
+          const response: errorMessage = {
+            message: "Something went wrong",
+          };
+          res.status(500).send(response);
+        }
       }
 
-      return updatedBoard;
+      // update the existing columns names
+      if (updateColumns)
+        for (let i = 0; i < updateColumns?.length; ++i) {
+          try {
+            await prisma.columns.update({
+              where: {
+                id: updateColumns[i].id,
+              },
+              data: {
+                name: updateColumns[i].name,
+              },
+            });
+          } catch (error) {
+            const response: errorMessage = {
+              message: "Something went wrong",
+            };
+            res.status(500).send(response);
+          }
+        }
+
+      // delete the columns
+      if (deleteColumns)
+        for (let i = 0; i < deleteColumns?.length; ++i) {
+          try {
+            await prisma.columns.delete({
+              where: {
+                id: deleteColumns[i].id,
+              },
+            });
+          } catch (error) {
+            const response: errorMessage = {
+              message: "Something went wrong",
+            };
+            res.status(500).send(response);
+          }
+        }
     });
 
     const response: successMessage = {
-      message: "returned all boards",
-      data: updatedBoard,
+      message: "Updated successfully",
+      data: result,
     };
+
     res.status(200).send(response);
   } catch (error) {
     const response: errorMessage = {

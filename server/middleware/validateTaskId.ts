@@ -65,11 +65,19 @@ export const validateMultipleTaskIds = async (
   }
 
   for (let i = 0; i < data.length; ++i) {
-    await prisma.task.findFirst({
-      where: {
-        id: data[i].taskId,
-      },
-    });
+    try {
+      await prisma.task.findFirst({
+        where: {
+          id: data[i].taskId,
+        },
+      });
+    } catch (error) {
+      const response: errorMessage = {
+        message: "Something went wrong",
+      };
+      res.status(500).send(response);
+      return;
+    }
   }
 
   next();

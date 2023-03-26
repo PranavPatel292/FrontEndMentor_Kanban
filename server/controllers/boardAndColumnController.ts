@@ -150,3 +150,40 @@ export const updateBoard = async (req: Request, res: Response) => {
     res.status(500).send(response);
   }
 };
+
+export const getBoardNameAndColumns = async (req: Request, res: Response) => {
+  try {
+    const boardId = req.query["boardId"] as string;
+
+    const boardName = await prisma.board.findFirst({
+      where: {
+        id: boardId,
+      },
+    });
+
+    const boardColumns = await prisma.columns.findMany({
+      where: {
+        boardId,
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    const response: successMessage = {
+      message: "Board and column names",
+      data: {
+        boardName: boardName?.name,
+        columns: boardColumns,
+      },
+    };
+
+    res.status(200).send(response);
+  } catch (error) {
+    const response: errorMessage = {
+      message: "Something went wrong",
+    };
+    res.status(500).send(response);
+  }
+};

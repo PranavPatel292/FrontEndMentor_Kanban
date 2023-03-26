@@ -37,7 +37,7 @@ export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
     "absolute top-1/2  left-1/2 transform -translate-x-1/2  -translate-y-1/2 bg-darkBG rounded-lg p-8 h-[343px] w-[659px] md:min-h-[675px] md:min-w-[480px]";
 
   const { data } = useQuery(["allColumnsNames"], getColumnNames, {
-    staleTime: 1000,
+    staleTime: Infinity,
   });
 
   const queryClient = useQueryClient();

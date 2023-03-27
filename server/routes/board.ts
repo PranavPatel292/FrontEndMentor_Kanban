@@ -11,8 +11,6 @@ router.get("/", getAllBoards);
 
 router.post("/", createBoard);
 
-// TODO: how to handle update request
-
 router.delete("/", validateBoardId, deleteBoard);
 
 module.exports = router;

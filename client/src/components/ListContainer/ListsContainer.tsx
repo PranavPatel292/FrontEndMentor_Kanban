@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import { AddColumn } from "./AddColumn";
 import { DroppableColumn } from "./DroppableColumn";
@@ -26,14 +26,19 @@ export const ListsContainer = () => {
     ["allColumnData"],
     getAllColumns,
     {
-      staleTime: 1000,
+      staleTime: Infinity,
     }
   );
 
+  console.log(data);
   // TODO: remove this useEffect
-  useEffect(() => {
-    setColumns(data?.data.data);
+  const memoizedColumnsData = useMemo(() => {
+    return data?.data.data;
   }, [data]);
+
+  useEffect(() => {
+    setColumns(memoizedColumnsData);
+  }, [memoizedColumnsData]);
 
   const onDragEnd = (
     result: any,

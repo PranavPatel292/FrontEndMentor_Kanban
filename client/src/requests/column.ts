@@ -37,7 +37,7 @@ export const createColumn = () => {
 };
 
 export const getColumnNames = async () => {
-  const response = await api.get("/column/allColumnsName", {
+  const response = await api.get("/boardAndColumnUpdate/boardNameAndColumns", {
     params: {
       boardId: "483a8091-9ddf-459e-9760-be473ccfd659",
     },

@@ -38,6 +38,8 @@ export const UpdateBoard = ({ isOpen, onRequestClose, item }: ModalProps) => {
 
   const { mutate } = updateBoard();
 
+  console.log(item);
+
   return (
     <Modal
       className={className}
@@ -85,11 +87,11 @@ export const UpdateBoard = ({ isOpen, onRequestClose, item }: ModalProps) => {
                       placeholder="eg: my dashboard"
                       className="bg-darkGrey border border-lines text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     />
-                    {/* {errors.boardName && touched.boardName ? (
+                    {errors.boardName && touched.boardName ? (
                       <p className="text-center p-0 text-[#FC1111] font-[500] text-sm   leading-[27px]">
-                        {errors.boardName}
+                        Please fill this field
                       </p>
-                    ) : null} */}
+                    ) : null}
                   </div>
 
                   <div className="flex flex-col space-y-2  ">

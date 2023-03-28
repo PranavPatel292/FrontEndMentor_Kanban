@@ -9,6 +9,7 @@ import { createTask } from "../../requests/task";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Modal } from "./Modal";
+import { StringParam, useQueryParam } from "use-query-params";
 
 interface ModalProps {
   isOpen: boolean;
@@ -36,9 +37,15 @@ export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
   const className =
     "absolute top-1/2  left-1/2 transform -translate-x-1/2  -translate-y-1/2 bg-darkBG rounded-lg p-8 h-[343px] w-[659px] md:min-h-[675px] md:min-w-[480px]";
 
-  const { data } = useQuery(["allColumnsNames"], getColumnNames, {
-    staleTime: Infinity,
-  });
+  const [queryParams, _] = useQueryParam("boardId", StringParam);
+
+  const { data } = useQuery(
+    ["allColumnsNames", queryParams],
+    () => getColumnNames(queryParams),
+    {
+      staleTime: Infinity,
+    }
+  );
 
   const queryClient = useQueryClient();
 
@@ -47,6 +54,11 @@ export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
   useEffect(() => {
     setColumnNames(data?.data.data);
   }, [data]);
+
+  useEffect(() => {
+    console.log(columnsName);
+    console.log(isOpen);
+  }, [columnsName]);
 
   return (
     <Modal
@@ -63,7 +75,7 @@ export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
                 subTasks: [""],
                 title: "",
                 description: "",
-                columnId: columnsName[0].id,
+                columnId: "",
               }}
               validationSchema={taskValidationSchema}
               onSubmit={(values, { resetForm }) => {
@@ -207,13 +219,15 @@ export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
                         as="select"
                         className="bg-darkGrey border border-lines text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       >
-                        {columnsName.map((column: any, index: number) => {
-                          return (
-                            <option value={column.id} key={index}>
-                              {column.name.toUpperCase()}
-                            </option>
-                          );
-                        })}
+                        {columnsName.columns.map(
+                          (column: any, index: number) => {
+                            return (
+                              <option value={column.id} key={index}>
+                                {column.name.toUpperCase()}
+                              </option>
+                            );
+                          }
+                        )}
                       </Field>
                     </div>
 

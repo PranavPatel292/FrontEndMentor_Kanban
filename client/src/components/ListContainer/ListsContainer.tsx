@@ -9,6 +9,7 @@ import {
   moveDataInterColumn,
   moveWithInTheColumns,
 } from "../../requests/column";
+import { StringParam, useQueryParam } from "use-query-params";
 
 interface WithInColumRequest {
   taskId: string;
@@ -22,15 +23,17 @@ export const ListsContainer = () => {
 
   const { mutate: moveDataInterColumnMutate } = moveDataInterColumn();
 
+  const [queryParams, _] = useQueryParam("boardId", StringParam);
+
   const { data, isLoading, error } = useQuery(
-    ["allColumnData"],
-    getAllColumns,
+    ["allColumnData", queryParams],
+    () => getAllColumns(queryParams),
     {
       staleTime: Infinity,
+      enabled: !queryParams === false,
     }
   );
 
-  console.log(data);
   // TODO: remove this useEffect
   const memoizedColumnsData = useMemo(() => {
     return data?.data.data;
@@ -124,7 +127,7 @@ export const ListsContainer = () => {
   return (
     <>
       {columns && (
-        <div className="flex flex-row space-x-10 mt-20 ml-4 md:mt-28 md:ml-6 lg:mt-32 overflow-y-scroll">
+        <div className=" flex flex-row space-x-10 ml-4 md:mt-28 md:ml-6 lg:mt-32 overflow-y-scroll">
           <DragDropContext
             onDragEnd={(result, provided) =>
               onDragEnd(result, columns, setColumns, provided)
@@ -134,13 +137,7 @@ export const ListsContainer = () => {
               return (
                 <DroppableColumn
                   id={id}
-                  indicatorColor={
-                    indicatorColor[
-                      Math.floor(
-                        index + 1 / Object.keys(data?.data.data).length
-                      )
-                    ]
-                  }
+                  indicatorColor={indicatorColor[1]}
                   index={index}
                   column={column}
                   key={index}

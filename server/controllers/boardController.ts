@@ -32,10 +32,10 @@ export const getAllBoards = async (req: Request, res: Response) => {
 
 export const createBoard = async (req: Request, res: Response) => {
   try {
-    const { name } = req.body;
+    const { name } = req.body.data;
 
     try {
-      await createBoardSchema.validate({ name: name });
+      await createBoardSchema.validate({ name });
     } catch (error: any) {
       const response: errorMessage = {
         message: error.message,
@@ -88,6 +88,45 @@ export const deleteBoard = async (req: Request, res: Response) => {
     const response: successMessage = {
       message: "deleted board",
       data: result.id,
+    };
+
+    res.status(200).send(response);
+  } catch (error) {
+    const response: errorMessage = {
+      message: "Something went wrong",
+    };
+    res.status(500).send(response);
+  }
+};
+
+export const getOneBoard = async (req: Request, res: Response) => {
+  try {
+    const boardId = req.query["boardId"] as string;
+
+    try {
+      await deleteBoardSchema.validate({ boardId });
+    } catch (error: any) {
+      const response: errorMessage = {
+        message: error.message,
+      };
+      res.status(400).send(response);
+      return;
+    }
+
+    const result = await prisma.board.findFirst({
+      where: {
+        id: boardId,
+      },
+      select: {
+        id: true,
+        name: true,
+        columns: true,
+      },
+    });
+
+    const response: successMessage = {
+      message: "one board data",
+      data: result,
     };
 
     res.status(200).send(response);

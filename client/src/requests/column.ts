@@ -1,12 +1,16 @@
 import api from "./axios_client";
 import { useMutation } from "react-query";
+import { StringParam, useQueryParam } from "use-query-params";
 
-export const getAllColumns = async () => {
+export const getAllColumns = async (queryParams: any) => {
+  const boardId = queryParams;
+
   const response = await api.get("/column/allColumns", {
     params: {
-      boardId: "483a8091-9ddf-459e-9760-be473ccfd659",
+      boardId: boardId,
     },
   });
+
   return response;
 };
 
@@ -23,23 +27,26 @@ export const moveDataInterColumn = () => {
 };
 
 export const createColumn = () => {
+  const [queryParams, _] = useQueryParam("boardId", StringParam);
   return useMutation((data: any) => {
     return api.post(
       "/column",
       { data },
       {
         params: {
-          boardId: "483a8091-9ddf-459e-9760-be473ccfd659",
+          boardId: queryParams,
         },
       }
     );
   });
 };
 
-export const getColumnNames = async () => {
+export const getColumnNames = async (queryParams: any) => {
+  const boardId = queryParams;
+
   const response = await api.get("/boardAndColumnUpdate/boardNameAndColumns", {
     params: {
-      boardId: "483a8091-9ddf-459e-9760-be473ccfd659",
+      boardId: boardId,
     },
   });
 

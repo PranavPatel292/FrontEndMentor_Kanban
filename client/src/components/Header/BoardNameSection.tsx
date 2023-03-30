@@ -32,6 +32,14 @@ export const BoardNameSection = () => {
     setIsOpenTaskModal(false);
   };
 
+  const handleUpdateBoardModal = () => {
+    setIsUpdateTaskModal(true);
+  };
+
+  const closeUpdateBoardModal = () => {
+    setIsUpdateTaskModal(false);
+  };
+
   useEffect(() => {
     setOneColumnData(data?.data.data);
   }, [data]);
@@ -112,6 +120,11 @@ export const BoardNameSection = () => {
           <CreateTask
             isOpen={isOpenTaskModal}
             onRequestClose={onRequestClose}
+          />
+          <UpdateBoard
+            isOpen={isUpdateTaskModal}
+            onRequestClose={closeUpdateBoardModal}
+            item={oneColumnData}
           />
           <div className="w-full flex flex-row px-4 md:px-8 items-center">
             <div className="w-full flex flex-row  items-center justify-between">

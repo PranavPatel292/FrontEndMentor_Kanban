@@ -1,6 +1,5 @@
 import { Modal } from "./Modal";
-import React from "react";
-import { Formik, Form, Field, FieldArray } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { createBoard } from "../../requests/board";
 import { showToast } from "../Common/Toast";
@@ -11,7 +10,7 @@ interface ModalProps {
   onRequestClose: () => void;
 }
 
-const ValidationSchema = Yup.object().shape({
+const CreateBoardValidationSchema = Yup.object().shape({
   name: Yup.string().required("Please provide name"),
 });
 
@@ -31,15 +30,16 @@ export const CreateBoard = ({ isOpen, onRequestClose }: ModalProps) => {
         children={
           <div className="flex flex-col p-8 space-y-10">
             <h1 className="text-white leading-[22.68px] text-xl">
-              Add new column
+              Add new board
             </h1>
             <Formik
               initialValues={{ name: "" }}
-              validationSchema={ValidationSchema}
+              validationSchema={CreateBoardValidationSchema}
               onSubmit={(values, { resetForm }) => {
+                console.log(values);
                 mutate(values, {
                   onSuccess: () => {
-                    showToast.success("New column added");
+                    showToast.success("New board added");
                     resetForm();
                   },
                   onError: () => {

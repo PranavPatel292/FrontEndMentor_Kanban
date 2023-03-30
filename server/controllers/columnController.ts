@@ -177,7 +177,7 @@ export const moveWithInTheColumn = async (req: Request, res: Response) => {
     const { data } = req.body;
 
     try {
-      await updateColumnSchemaArray.validate(data);
+      await updateColumnSchemaArray.validate({ data: data });
     } catch (error: any) {
       const response: errorMessage = {
         message: error.message,

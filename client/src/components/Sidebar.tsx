@@ -29,8 +29,11 @@ export const Sidebar = ({ open }: SidebarProps) => {
     setOpenCreateBoardModal(true);
   };
 
+  // TODO: what happens if there is no board
   useEffect(() => {
     setBoardData(data?.data.data);
+    setBoardId(data?.data.data[0]?.id);
+    setActiveIndex(0);
   }, [data]);
 
   const handleClick = (index: number, boardId: string) => {

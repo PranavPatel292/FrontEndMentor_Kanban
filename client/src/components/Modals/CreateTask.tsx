@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Modal } from "./Modal";
 import { StringParam, useQueryParam } from "use-query-params";
+import { showToast } from "../Common/Toast";
 
 interface ModalProps {
   isOpen: boolean;
@@ -39,7 +40,8 @@ export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
 
   const [queryParams, _] = useQueryParam("boardId", StringParam);
 
-  const { data } = useQuery(
+  // get columns names of specific board
+  const { data, isLoading } = useQuery(
     ["allColumnsNames", queryParams],
     () => getColumnNames(queryParams),
     {
@@ -48,17 +50,11 @@ export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
   );
 
   const queryClient = useQueryClient();
-
   const { mutate } = createTask();
 
   useEffect(() => {
     setColumnNames(data?.data.data);
   }, [data]);
-
-  useEffect(() => {
-    console.log(columnsName);
-    console.log(isOpen);
-  }, [columnsName]);
 
   return (
     <Modal
@@ -75,7 +71,7 @@ export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
                 subTasks: [""],
                 title: "",
                 description: "",
-                columnId: "",
+                columnId: columnsName.columns[0],
               }}
               validationSchema={taskValidationSchema}
               onSubmit={(values, { resetForm }) => {
@@ -87,29 +83,11 @@ export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
                 };
                 mutate(data, {
                   onSuccess: () => {
-                    toast.success("Data inserted successfully", {
-                      position: "top-right",
-                      autoClose: 5000,
-                      hideProgressBar: false,
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                      progress: undefined,
-                      theme: "dark",
-                    });
+                    showToast.success("Data inserted successfully");
                     resetForm();
                   },
                   onError: () => {
-                    toast.error("Sorry something went wrong", {
-                      position: "top-right",
-                      autoClose: 5000,
-                      hideProgressBar: false,
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                      progress: undefined,
-                      theme: "dark",
-                    });
+                    showToast.error("Sorry something went wrong");
                   },
                   onSettled: () => {
                     queryClient.invalidateQueries("allColumnData");
@@ -214,11 +192,13 @@ export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
                       <label className="text-white text-xs leading-[15.12px] font-bold ">
                         Status
                       </label>
+
                       <Field
                         name="columnId"
                         as="select"
                         className="bg-darkGrey border border-lines text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                       >
+                        <option></option>
                         {columnsName.columns.map(
                           (column: any, index: number) => {
                             return (

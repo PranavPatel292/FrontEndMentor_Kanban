@@ -10,6 +10,7 @@ import {
   moveWithInTheColumns,
 } from "../../requests/column";
 import { StringParam, useQueryParam } from "use-query-params";
+import { showToast } from "../Common/Toast";
 
 interface WithInColumRequest {
   taskId: string;
@@ -43,16 +44,13 @@ export const ListsContainer = () => {
     setColumns(memoizedColumnsData);
   }, [memoizedColumnsData]);
 
-  const onDragEnd = (
-    result: any,
-    columns: any,
-    setColumns: any,
-    provided: any
-  ) => {
+  const onDragEnd = (result: any, columns: any, setColumns: any, _: any) => {
     const { source, destination } = result;
+
     if (!result.destination) return;
+
     const prevData = columns;
-    // TODO: check for what to do when you have error;
+
     if (source.droppableId !== destination.droppableId) {
       const sourceColumn = columns[source.droppableId];
       const destColumn = columns[destination.droppableId];
@@ -107,8 +105,7 @@ export const ListsContainer = () => {
 
       moveWithInTheColumnMutate(data, {
         onError: () => {
-          // TODO: make a toast error message
-          // if error then go back to the previous state data
+          showToast.error("Something went wrong");
           setColumns(prevData);
           return;
         },

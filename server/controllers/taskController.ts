@@ -95,6 +95,7 @@ export const createTask = async (req: Request, res: Response) => {
       res.status(400).send(response);
       return;
     }
+
     const result = await prisma.$transaction(async () => {
       // count the total number
       const totalRecords = await prisma.task.count({

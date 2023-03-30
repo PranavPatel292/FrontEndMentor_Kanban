@@ -1,5 +1,4 @@
-import { Formik, Form, Field, FieldArray } from "formik";
-import ReactModal from "react-modal";
+import { Formik, Form, Field } from "formik";
 import { useQueryClient } from "react-query";
 import { createColumn } from "../../requests/column";
 import * as Yup from "yup";
@@ -11,7 +10,7 @@ interface ModalProps {
   onRequestClose: () => void;
 }
 
-const ValidationSchema = Yup.object().shape({
+const CreateColumnValidationSchema = Yup.object().shape({
   name: Yup.string().required("Please provide name"),
 });
 
@@ -32,7 +31,7 @@ export const CreateNewColumn = ({ isOpen, onRequestClose }: ModalProps) => {
           </h1>
           <Formik
             initialValues={{ name: "" }}
-            validationSchema={ValidationSchema}
+            validationSchema={CreateColumnValidationSchema}
             onSubmit={(values, { resetForm }) => {
               mutate(values, {
                 onSuccess: () => {
@@ -44,6 +43,7 @@ export const CreateNewColumn = ({ isOpen, onRequestClose }: ModalProps) => {
                 },
                 onSettled: () => {
                   queryClient.invalidateQueries("allColumnData");
+                  queryClient.invalidateQueries("allColumnsNames");
                 },
               });
             }}
@@ -66,6 +66,7 @@ export const CreateNewColumn = ({ isOpen, onRequestClose }: ModalProps) => {
                       </p>
                     ) : null}
                   </div>
+
                   <div className="flex flex-row justify-center items-center">
                     <button
                       type="submit"

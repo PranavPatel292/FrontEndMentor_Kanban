@@ -23,7 +23,7 @@ const updateColumnNamesSchema = Yup.object().shape({
 });
 
 const taskValidationSchema = Yup.object().shape({
-  boardName: Yup.string().min(1).required("Please provide name"),
+  name: Yup.string().min(1).required("Please provide name"),
   colNames: Yup.array().of(updateColumnNamesSchema).required(),
 });
 
@@ -34,11 +34,8 @@ export const UpdateBoard = ({ isOpen, onRequestClose, item }: ModalProps) => {
   const className =
     "absolute top-1/2  left-1/2 transform -translate-x-1/2  -translate-y-1/2 bg-darkBG rounded-lg p-8 h-[343px] w-[659px] md:min-h-[675px] md:min-w-[480px]";
 
-  const queryClient = useQueryClient();
-
   const { mutate } = updateBoard();
-
-  console.log(item);
+  const queryClient = useQueryClient();
 
   return (
     <Modal
@@ -51,10 +48,9 @@ export const UpdateBoard = ({ isOpen, onRequestClose, item }: ModalProps) => {
 
           <Formik
             initialValues={item}
-            validationSchema={taskValidationSchema}
             onSubmit={(values, { resetForm }) => {
               const data = {
-                name: values.boardName,
+                name: values.name,
                 colNames: values.columns.map((col: any) => {
                   if (col.id) return { id: col.id, name: col.name };
                   return { name: col };
@@ -83,11 +79,11 @@ export const UpdateBoard = ({ isOpen, onRequestClose, item }: ModalProps) => {
                       Name
                     </label>
                     <Field
-                      name="boardName"
+                      name="name"
                       placeholder="eg: my dashboard"
                       className="bg-darkGrey border border-lines text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     />
-                    {errors.boardName && touched.boardName ? (
+                    {errors.name && touched.name ? (
                       <p className="text-center p-0 text-[#FC1111] font-[500] text-sm   leading-[27px]">
                         Please fill this field
                       </p>
@@ -111,7 +107,7 @@ export const UpdateBoard = ({ isOpen, onRequestClose, item }: ModalProps) => {
                                     value={values.columns[index].name}
                                     placeholder={`eg: Todo`}
                                     className={`bg-darkGrey border mb-2 text-white border-lines  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
-                                    name={`columns.${index}`}
+                                    name={`columns.${index}.name`}
                                   />
 
                                   <RxCross2

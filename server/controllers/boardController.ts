@@ -30,6 +30,7 @@ export const getAllBoards = async (req: Request, res: Response) => {
   }
 };
 
+// TODO: classify the prisma errors
 export const createBoard = async (req: Request, res: Response) => {
   try {
     const { name } = req.body.data;

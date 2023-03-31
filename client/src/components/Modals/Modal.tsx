@@ -21,7 +21,7 @@ export const Modal = ({
         shouldCloseOnOverlayClick={true}
         shouldCloseOnEsc={true}
         className={className}
-        overlayClassName="fixed inset-0 bg-black opacity-95"
+        overlayClassName="fixed z-[100] inset-0 bg-black opacity-95"
       >
         {children}
       </ReactModal>

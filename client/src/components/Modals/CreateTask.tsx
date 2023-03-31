@@ -1,16 +1,15 @@
 import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
 import { useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
-import ReactModal from "react-modal";
 import { RxCross2 } from "react-icons/rx";
 import { getColumnNames } from "../../requests/column";
 import { useQuery, useQueryClient } from "react-query";
 import { createTask } from "../../requests/task";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Modal } from "./Modal";
 import { StringParam, useQueryParam } from "use-query-params";
 import { showToast } from "../Common/Toast";
+import ScrollableFeed from "react-scrollable-feed";
 
 interface ModalProps {
   isOpen: boolean;
@@ -39,6 +38,13 @@ export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
     "absolute top-1/2  left-1/2 transform -translate-x-1/2  -translate-y-1/2 bg-darkBG rounded-lg p-8 h-[343px] w-[659px] md:min-h-[675px] md:min-w-[480px]";
 
   const [queryParams, _] = useQueryParam("boardId", StringParam);
+
+  const componentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    componentRef?.current?.scrollIntoView();
+    console.log(componentRef.current?.scrollHeight);
+  });
 
   // get columns names of specific board
   const { data, isLoading } = useQuery(
@@ -139,40 +145,43 @@ export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
                         {({ remove, push }) => (
                           <div>
                             {/* TODO: make last element in focus */}
+
                             <div className="max-h-[100px] overflow-y-scroll">
-                              {values.subTasks.map((_, index) => (
-                                <div key={index}>
-                                  <div className="flex flex-row space-x-5 overflow-y-scroll justify-center items-center">
-                                    <Field
-                                      placeholder={`eg: ${
-                                        subTasksPlaceHolders[
-                                          index % subTasksPlaceHolders.length
-                                        ]
-                                      } ${
-                                        errors.subTasks && touched.subTasks
-                                          ? "text-red"
-                                          : ""
-                                      } `}
-                                      className={`bg-darkGrey border mb-2 text-white border-lines  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
-                                      name={`subTasks.${index}`}
-                                    />
+                              <ScrollableFeed>
+                                {values.subTasks.map((_, index) => (
+                                  <div key={index}>
+                                    <div className="flex flex-row space-x-5 overflow-y-scroll justify-center items-center">
+                                      <Field
+                                        placeholder={`eg: ${
+                                          subTasksPlaceHolders[
+                                            index % subTasksPlaceHolders.length
+                                          ]
+                                        } ${
+                                          errors.subTasks && touched.subTasks
+                                            ? "text-red"
+                                            : ""
+                                        } `}
+                                        className={`bg-darkGrey border mb-2 text-white border-lines  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                                        name={`subTasks.${index}`}
+                                      />
 
-                                    <RxCross2
-                                      color={"red"}
-                                      size="25px"
-                                      onClick={() => {
-                                        remove(index);
-                                      }}
-                                    />
+                                      <RxCross2
+                                        color={"red"}
+                                        size="25px"
+                                        onClick={() => {
+                                          remove(index);
+                                        }}
+                                      />
 
-                                    <ErrorMessage
-                                      component="p"
-                                      name={`subTasks.${index}`}
-                                      className="text-red text-sm min-w-[150px] text-right"
-                                    />
+                                      <ErrorMessage
+                                        component="p"
+                                        name={`subTasks.${index}`}
+                                        className="text-red text-sm min-w-[150px] text-right"
+                                      />
+                                    </div>
                                   </div>
-                                </div>
-                              ))}
+                                ))}
+                              </ScrollableFeed>
                             </div>
                             <button
                               type="button"

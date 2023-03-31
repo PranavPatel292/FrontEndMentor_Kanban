@@ -1,13 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BiDotsVerticalRounded } from "react-icons/bi";
 import { useQuery, useQueryClient } from "react-query";
 import Swal from "sweetalert2";
-import { UpdateBoard } from "../Modals/UpdateBoard";
-import { getColumnNames } from "../../requests/column";
+import { StringParam, useQueryParam } from "use-query-params";
 import { deleteBoard, getOneBoard } from "../../requests/board";
 import { showToast } from "../Common/Toast";
 import { CreateTask } from "../Modals/CreateTask";
-import { StringParam, useQueryParam } from "use-query-params";
+import { UpdateBoard } from "../Modals/UpdateBoard";
 
 export const BoardNameSection = () => {
   const [isOpenTaskModal, setIsOpenTaskModal] = useState(false);
@@ -50,6 +49,7 @@ export const BoardNameSection = () => {
   };
 
   const handleOnClick = () => {
+    console.log("helli");
     setIsMenuOpen(!isMenuOpen);
   };
 
@@ -126,7 +126,7 @@ export const BoardNameSection = () => {
             onRequestClose={closeUpdateBoardModal}
             item={oneColumnData}
           />
-          <div className="w-full flex flex-row px-4 md:px-8 items-center">
+          <div className="w-full  z-[100] flex flex-row px-4 md:px-8 items-center">
             <div className="w-full flex flex-row  items-center justify-between">
               <h1 className="text-xl max-w-[200px] md:max-w-[400px] truncate md:text-2xl text-white font-bold leading-7">
                 {oneColumnData.name}

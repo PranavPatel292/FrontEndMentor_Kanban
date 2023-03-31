@@ -1,8 +1,7 @@
 import React from "react";
-import ReactModal from "react-modal";
 import { BiDotsVerticalRounded } from "react-icons/bi";
-import { updateSubTaskStatus } from "../../requests/subtask";
 import { useQueryClient } from "react-query";
+import { updateSubTaskStatus } from "../../requests/subtask";
 import { showToast } from "../Common/Toast";
 import { Modal } from "./Modal";
 

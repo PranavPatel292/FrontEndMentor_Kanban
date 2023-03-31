@@ -1,4 +1,3 @@
-import React from "react";
 import { BannerSection } from "./BannerSection";
 import { BoardNameSection } from "./BoardNameSection";
 

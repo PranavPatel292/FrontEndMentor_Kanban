@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { TbTemplate } from "react-icons/tb";
-import { useQuery, useQueryClient } from "react-query";
-import { useNavigate } from "react-router-dom";
+import { useQuery } from "react-query";
 import { StringParam, useQueryParam } from "use-query-params";
 import { getAllBoards } from "../requests/board";
 import { CreateBoard } from "./Modals/CreateBoard";
@@ -50,13 +49,13 @@ export const Sidebar = ({ open }: SidebarProps) => {
 
       {boardData && (
         <div
-          className={`w-[265px] fixed  top-24 bg-darkGrey transition-all duration-300 ease-in-out ${
+          className={`w-[265px] absolute z-[2]  top-24 bg-darkGrey transition-all duration-300 ease-in-out ${
             open ? "translate-x-0" : "translate-x-[-400px]"
           }`}
         >
           <div className="flex flex-col h-screen w-full mt-5 ml-6">
             <p className="text-mediumGrey text-[14px] leading-[15.12px] font-bold">
-              All Boards (3)
+              All Boards ({boardData.length})
             </p>
 
             <div className="flex flex-col mt-5 space-y-5">
@@ -67,7 +66,7 @@ export const Sidebar = ({ open }: SidebarProps) => {
                     index === activeIndex
                       ? "bg-mainPurple rounded-lg p-2 w-[200px]"
                       : ""
-                  } `}
+                  } hover:cursor-pointer`}
                   onClick={() => handleClick(index, board.id)}
                 >
                   <TbTemplate

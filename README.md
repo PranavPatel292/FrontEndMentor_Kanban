@@ -3,24 +3,24 @@
 Features:
 
 1. Full fledge full stack system.
-2. Persistent storage made using PostgreSQL.
+2. Persistent storage using PostgreSQL.
 3. Persistent task order support.
-4. Multiple column creation and deletion support. (➕ / ❌)
+4. Multiple column creation ➕ and deletion ❌ support.
 5. Multiple board creation and deletion support. (➕ / ❌)
-6. Drag and drop support for column. (🔥)
+6. Drag and drop support for column.
 7. Update the task, column name and board name support.
 
-## A full demo of the application
+## Demo / walk-through of the application
 
 https://youtu.be/bFNpX-Zy0p8
 
 ## Tech stack used
 
 1. [NodeJS](https://nodejs.org/en) - an open-source, cross-platform JavaScript runtime environment.
-2. [React](https://react.dev/) - The library for web and native user interfaces
-3. [TypeScript](https://www.typescriptlang.org/) - A typed JavaScript
-4. [PostgreSQL](https://www.postgresql.org/) - Open Source Relational Database
-5. [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework
+2. [React](https://react.dev/) - The library for web and native user interfaces.
+3. [TypeScript](https://www.typescriptlang.org/) - A typed JavaScript.
+4. [PostgreSQL](https://www.postgresql.org/) - Open Source Relational Database.
+5. [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework.
 
 ## How to run
 
@@ -75,3 +75,13 @@ There are two parts of the project.
 - This should start the server on `port 3000` and for the client it should start on `port 5173`.
 
 - Open http://localhost:5173/ with your browser to see the result.
+
+## Future work
+
+1. Use type frequently in the client.
+2. Make code as efficient as possible.
+3. Update task is still buggy.
+4. Host on the cloud.
+5. Add multiple user support.
+6. Add authentication.
+7. Make mobile responsive.

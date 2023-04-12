@@ -3,7 +3,10 @@
 This is a sample of the Kanban board with drag and drop functionality and full backend support to save the data
 persistently.
 
-The design of the board is taking from the [Frontend Mentor](https://www.frontendmentor.io/challenges/kanban-task-management-web-app-wgQLt-HlbB).
+![dashboard_image_1](https://github.com/PranavPatel292/FrontEndMentor_Kanban/blob/readme/doc/media/Screenshot%202023-04-12%20at%203.29.00%20pm.png)
+![dashboard_image_2](https://github.com/PranavPatel292/FrontEndMentor_Kanban/blob/readme/doc/media/Screenshot%202023-04-12%20at%203.29.08%20pm.png)
+
+The design of the board is from the [Frontend Mentor](https://www.frontendmentor.io/challenges/kanban-task-management-web-app-wgQLt-HlbB).
 
 Features:
 

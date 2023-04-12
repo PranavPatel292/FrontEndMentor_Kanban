@@ -11,7 +11,7 @@ interface SidebarProps {
 
 export const Sidebar = ({ open }: SidebarProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [boardId, setBoardId] = useQueryParam("boardId", StringParam);
+  const [_, setBoardId] = useQueryParam("boardId", StringParam);
   const [openCreateBoardModal, setOpenCreateBoardModal] = useState(false);
 
   const [boardData, setBoardData] = useState([]);

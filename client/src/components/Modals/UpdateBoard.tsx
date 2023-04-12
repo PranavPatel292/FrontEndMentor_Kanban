@@ -1,12 +1,15 @@
-import { ErrorMessage, Field, FieldArray, Form, Formik } from "formik";
-import { useRef } from "react";
-import { RxCross2 } from "react-icons/rx";
-import { useQueryClient } from "react-query";
-import "react-toastify/dist/ReactToastify.css";
+import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
+import { useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
+import { RxCross2 } from "react-icons/rx";
+import { getColumnNames } from "../../requests/column";
+import { useQuery, useQueryClient } from "react-query";
+import { createTask } from "../../requests/task";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Modal } from "./Modal";
 import { updateBoard } from "../../requests/board";
 import { showToast } from "../Common/Toast";
-import { Modal } from "./Modal";
 
 interface ModalProps {
   isOpen: boolean;
@@ -45,6 +48,7 @@ export const UpdateBoard = ({ isOpen, onRequestClose, item }: ModalProps) => {
 
           <Formik
             initialValues={item}
+            // validationSchema={taskValidationSchema}
             onSubmit={(values, { resetForm }) => {
               const data = {
                 name: values.name,
@@ -64,6 +68,7 @@ export const UpdateBoard = ({ isOpen, onRequestClose, item }: ModalProps) => {
                 onSettled: () => {
                   queryClient.invalidateQueries("allColumnData");
                   queryClient.invalidateQueries("boardNameAndColumnsNames");
+                  queryClient.invalidateQueries("oneColumnData");
                 },
               });
             }}

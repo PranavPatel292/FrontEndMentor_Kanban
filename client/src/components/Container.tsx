@@ -3,12 +3,27 @@ import { ListsContainer } from "./ListContainer/ListsContainer";
 import { Header } from "./Header/Header";
 import { Sidebar } from "./Sidebar";
 import { BsEye } from "react-icons/bs";
+import { BooleanParam, StringParam, useQueryParam } from "use-query-params";
+
+import { CreateTask } from "./Modals/CreateTask";
 
 // TODO: change the max-width dynamically
 export const Container = () => {
   const [open, setOpen] = useState(false);
-
+  const [editTask, setEditTask] = useQueryParam("EditBoard", BooleanParam);
+  const [taskId, setTaskId] = useQueryParam("taskId", StringParam);
   const componentRef = useRef<HTMLDivElement>(null);
+  const [updateTaskModalOpen, setUpdateTaskModalOpen] = useState(false);
+
+  const handleUpdateTaskModalClose = () => {
+    setEditTask(undefined);
+    setUpdateTaskModalOpen(false);
+    setTaskId(undefined);
+  };
+
+  useEffect(() => {
+    if (editTask) setUpdateTaskModalOpen(true);
+  }, [editTask]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -30,9 +45,13 @@ export const Container = () => {
   return (
     <>
       <div className="w-full bg-darkBG ">
+        <CreateTask
+          isOpen={updateTaskModalOpen}
+          onRequestClose={handleUpdateTaskModalClose}
+        />
         <Header />
         <div
-          className={`fixed top-[670px] rounded-r-lg w-[56px] ml-[-10px] text-white z-10 bg-[#635FC7] pl-5 py-3 rounded-lg`}
+          className={`fixed bottom-[30px] rounded-r-lg w-[56px] ml-[-10px] text-white z-10 bg-[#635FC7] pl-5 py-3 rounded-lg`}
           onClick={() => setOpen(!open)}
         >
           <BsEye size={20} />

@@ -16,7 +16,7 @@ export const validateTaskId = async (
   const taskId = req.query["taskId"] as string;
 
   try {
-    await schema.validate({ taskId: taskId[1] });
+    await schema.validate({ taskId: taskId });
   } catch (error: any) {
     const response: errorMessage = {
       message: error.message,
@@ -27,7 +27,7 @@ export const validateTaskId = async (
 
   const result = await prisma.task.findFirst({
     where: {
-      id: taskId[1],
+      id: taskId,
     },
   });
 

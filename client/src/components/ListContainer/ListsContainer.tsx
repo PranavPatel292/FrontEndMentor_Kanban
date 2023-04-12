@@ -124,27 +124,26 @@ export const ListsContainer = () => {
   return (
     <>
       {columns && (
-        <div className="px-10 flex flex-row space-x-10 ml-4 md:mt-28 md:ml-6 lg:mt-32 overflow-y-scroll">
+        <div className=" flex flex-row space-x-10 ml-4 md:mt-28 md:ml-6 lg:mt-32 overflow-y-scroll">
           <DragDropContext
             onDragEnd={(result, provided) =>
               onDragEnd(result, columns, setColumns, provided)
             }
           >
-            {Object.entries(columns).map(([id, column], index) => {
-              return (
-                <DroppableColumn
-                  id={id}
-                  indicatorColor={
-                    indicatorColor[
-                      Math.floor(index + 1 / Object.keys(columns).length)
-                    ]
-                  }
-                  index={index}
-                  column={column}
-                  key={index}
-                />
-              );
-            })}
+            {columns &&
+              Object.entries(columns).map(([id, column], index) => {
+                return (
+                  <DroppableColumn
+                    id={id}
+                    indicatorColor={
+                      indicatorColor[index % indicatorColor.length]
+                    }
+                    index={index}
+                    column={column}
+                    key={index}
+                  />
+                );
+              })}
           </DragDropContext>
           <AddColumn />
         </div>

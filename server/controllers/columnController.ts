@@ -204,7 +204,6 @@ export const moveWithInTheColumn = async (req: Request, res: Response) => {
 
     res.status(200).send(response);
   } catch (error) {
-    console.log(error);
     const response: errorMessage = {
       message: "Something went wrong",
     };
@@ -270,7 +269,6 @@ export const moveInterDataColumn = async (req: Request, res: Response) => {
     const response: errorMessage = {
       message: "Something went wrong",
     };
-    console.log(response);
     res.status(500).send(response);
   }
 };

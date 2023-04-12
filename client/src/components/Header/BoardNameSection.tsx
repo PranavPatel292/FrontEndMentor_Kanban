@@ -49,7 +49,6 @@ export const BoardNameSection = () => {
   };
 
   const handleOnClick = () => {
-    console.log("helli");
     setIsMenuOpen(!isMenuOpen);
   };
 

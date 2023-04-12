@@ -68,12 +68,12 @@ export const updateBoard = async (req: Request, res: Response) => {
 
       const updateColumns = databaseColumns
         ?.filter((col: any) => {
-          return idToNameMap[col.id] && idToNameMap[col.id] !== col.name;
+          return idToNameMap[col.id] && idToNameMap[col.name] !== col.name;
         })
         .map((col: any) => {
           return {
             ...col,
-            name: idToNameMap[col.id],
+            name: idToNameMap[col.name],
           };
         });
 

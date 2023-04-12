@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { useLongPress } from "use-long-press";
 import Swal from "sweetalert2";
@@ -7,6 +7,7 @@ import { deleteTask } from "../../requests/task";
 import { useQueryClient } from "react-query";
 import { ShowItem } from "../Modals/ShowItem";
 import { showToast } from "../Common/Toast";
+import { BooleanParam, StringParam, useQueryParam } from "use-query-params";
 
 interface DraggableItemProps {
   index: number;
@@ -17,6 +18,8 @@ export const DraggableItem = ({ index, item }: DraggableItemProps) => {
   const [isLongPress, setIsLongPress] = useState(false);
   const queryClient = useQueryClient();
 
+  const [_, setTaskId] = useQueryParam("taskId", StringParam);
+  const [editTask, setEditTask] = useQueryParam("EditBoard", BooleanParam);
   const completedSubTasks = item.subTask?.filter((subtask: any) => {
     return subtask.status === "COMPLETE";
   });
@@ -61,11 +64,16 @@ export const DraggableItem = ({ index, item }: DraggableItemProps) => {
   };
 
   const onRequestClose = () => {
+    if (!editTask) setTaskId(undefined);
     setShowItemModalOpen(false);
   };
 
   const handleOnClick = () => {
-    if (!isLongPress) setShowItemModalOpen(true);
+    if (!isLongPress) {
+      setEditTask(undefined);
+      setShowItemModalOpen(true);
+      setTaskId(item?.id);
+    }
   };
 
   const bind = useLongPress(() => {}, {
@@ -84,13 +92,15 @@ export const DraggableItem = ({ index, item }: DraggableItemProps) => {
     cancelOnMovement: false,
   });
 
+  useEffect(() => {
+    if (editTask) {
+      onRequestClose();
+    }
+  }, [editTask]);
+
   return (
     <>
-      <ShowItem
-        items={item}
-        isOpen={showItemModalOpen}
-        onRequestClose={onRequestClose}
-      />
+      <ShowItem isOpen={showItemModalOpen} onRequestClose={onRequestClose} />
 
       <Draggable draggableId={item.id} key={item.id} index={index}>
         {(provided) => {

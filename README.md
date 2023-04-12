@@ -14,6 +14,14 @@ Features:
 
 https://youtu.be/bFNpX-Zy0p8
 
+## Tech stack used
+
+1. [NodeJS](https://nodejs.org/en) - an open-source, cross-platform JavaScript runtime environment.
+2. [React](https://react.dev/) - The library for web and native user interfaces
+3. [TypeScript](https://www.typescriptlang.org/) - A typed JavaScript
+4. [PostgreSQL](https://www.postgresql.org/) - Open Source Relational Database
+5. [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework
+
 ## How to run
 
 Make sure you have the `NodeJS` and a package manager `(YARN or NPM)` before proceeding further.
@@ -27,6 +35,7 @@ There are two parts of the project.
 
   ```sh
   $ npm install
+  # or
   $ npm
   ```
 
@@ -34,12 +43,13 @@ There are two parts of the project.
 
   ```sh
   $ yarn
+  # or
   $ yarn
   ```
 
 - The client does not necessarily need to do anything.
 
-- The server side, however, since it is a full stack application and uses [PostgreSQL](https://www.postgresql.org/) as the database and [Prisma](https://www.prisma.io/) as ORM, you need to create a `.env` file in the root of the server folder and append the following environment variable to it.
+- The server side, however, since it is a full stack application and uses PostgreSQL as the database and [Prisma](https://www.prisma.io/) as ORM, you need to create a `.env` file in the root of the server folder and append the following environment variable to it.
 
   `.env`
 
@@ -63,3 +73,5 @@ There are two parts of the project.
   ```
 
 - This should start the server on `port 3000` and for the client it should start on `port 5173`.
+
+- Open http://localhost:5173/ with your browser to see the result.

@@ -1,12 +1,17 @@
 # Kanban using React-DnD (Full Stack)
 
+This is a sample of the Kanban board with drag and drop functionality and full backend support to save the data
+persistently.
+
+The design of the board is taking from the [Frontend Mentor](https://www.frontendmentor.io/challenges/kanban-task-management-web-app-wgQLt-HlbB).
+
 Features:
 
 1. Full fledge full stack system.
 2. Persistent storage using PostgreSQL.
 3. Persistent task order support.
-4. Multiple column creation ➕ and deletion ❌ support.
-5. Multiple board creation and deletion support. (➕ / ❌)
+4. Multiple column creation and deletion support.
+5. Multiple board creation and deletion support.
 6. Drag and drop support for column.
 7. Update the task, column name and board name support.
 
@@ -85,3 +90,4 @@ There are two parts of the project.
 5. Add multiple user support.
 6. Add authentication.
 7. Make mobile responsive.
+8. Add dark and light mode support.

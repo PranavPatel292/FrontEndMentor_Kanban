@@ -37,6 +37,15 @@ const validateSubTask = Yup.object().shape({
   position: Yup.number().optional(),
 });
 
+const generateValidationSchema = () => {
+  return Yup.object().shape({
+    title: Yup.string().min(1).required("Please provide title"),
+    description: Yup.string().min(1).required("Please provide description"),
+    columnId: Yup.string().required("Please provide columnId"),
+    subTasks: Yup.array().of(validateSubTask.required()),
+  });
+};
+
 const taskValidationSchema = Yup.object().shape({
   title: Yup.string().min(1).required("Please provide title"),
   description: Yup.string().min(1).required("Please provide description"),
@@ -52,6 +61,7 @@ export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
     "absolute top-1/2  left-1/2 transform -translate-x-1/2  -translate-y-1/2 bg-darkBG rounded-lg p-8 h-[343px] w-[659px] md:min-h-[675px] md:min-w-[480px]";
 
   const [queryParams, _] = useQueryParam("boardId", StringParam);
+  console.log(queryParams);
   const [taskId, setTaskId] = useQueryParam("taskId", StringParam);
   const [editTask, setEditTask] = useQueryParam("EditBoard", BooleanParam);
 
@@ -70,8 +80,8 @@ export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
     componentRef?.current?.scrollIntoView();
   });
 
-  // get columns names of specific board
-  const { data, isLoading } = useQuery(
+  /* get columns names of specific board */
+  const { data } = useQuery(
     ["allColumnsNames", queryParams],
     () => getColumnNames(queryParams),
     {
@@ -103,10 +113,10 @@ export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
       ) : (
         <Modal
           className={className}
-          isOpen={isOpen}
+          isOpen={isOpen || editTask !== undefined}
           onRequestClose={onRequestClose}
           children={
-            <div className="flex flex-col p-8 space-y-5">
+            <div className="flex z-10 flex-col p-8 space-y-5">
               <h1 className="text-white leading-[22.68px] text-xl">
                 {editTask ? `Edit task` : `Add new task`}
               </h1>
@@ -114,7 +124,7 @@ export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
               {columnsName && (
                 <Formik
                   initialValues={initialData}
-                  //validationSchema={taskValidationSchema}
+                  validationSchema={generateValidationSchema()}
                   onSubmit={(values, { resetForm }) => {
                     const data = {
                       ...values,
@@ -155,6 +165,7 @@ export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
                         },
                         onSettled: () => {
                           queryClient.invalidateQueries("allColumnData");
+                          resetForm();
                         },
                       });
                     }
@@ -174,7 +185,7 @@ export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
                           />
                           {errors.title && touched.title ? (
                             <p className="text-center p-0 text-[#FC1111] font-[500] text-sm   leading-[27px]">
-                              {errors.title}
+                              {<span>errors.title</span>}
                             </p>
                           ) : null}
                         </div>
@@ -184,6 +195,7 @@ export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
                             Description
                           </label>
                           <Field
+                            as="textarea"
                             name="description"
                             value={values?.description}
                             placeholder={`e.g. It’s always good to take a break.\n`}
@@ -191,7 +203,7 @@ export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
                           />
                           {errors.description && touched.description ? (
                             <p className="text-center p-0 text-[#FC1111] font-[500] text-sm   leading-[27px]">
-                              {errors.description}
+                              {<span>errors.description</span>}
                             </p>
                           ) : null}
                         </div>
@@ -222,7 +234,8 @@ export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
                                               className={`bg-darkGrey border mb-2 text-white border-lines  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
                                               name={`subTasks.${index}.title`}
                                               value={
-                                                values.subTasks[index].title
+                                                values.subTasks[index]?.title ??
+                                                ""
                                               }
                                             />
 
@@ -234,11 +247,11 @@ export const CreateTask = ({ isOpen, onRequestClose }: ModalProps) => {
                                               }}
                                             />
 
-                                            {/* <ErrorMessage
+                                            <ErrorMessage
                                               component="p"
                                               name={`subTasks.${index}.id`}
                                               className="text-red text-sm min-w-[150px] text-right"
-                                            /> */}
+                                            />
                                           </div>
                                         </div>
                                       )

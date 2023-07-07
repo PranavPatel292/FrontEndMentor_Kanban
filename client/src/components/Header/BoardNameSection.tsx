@@ -116,6 +116,11 @@ export const BoardNameSection = () => {
     <>
       {oneColumnData && (
         <>
+          {/* Don't handle the state here, as this modal is used somewhere else in the code,
+            might do the unnecessary re-rendering,
+            so you can add a param here that will be used to trigger this modal,
+            similarly can do the same for the updateBoard. 
+          */}
           <CreateTask
             isOpen={isOpenTaskModal}
             onRequestClose={onRequestClose}

@@ -11,9 +11,14 @@ import { Modal } from "./Modal";
 interface ShowItemModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
+  setShowItemModalOpen: any;
 }
 
-export const ShowItem = ({ isOpen, onRequestClose }: ShowItemModalProps) => {
+export const ShowItem = ({
+  isOpen,
+  onRequestClose,
+  setShowItemModalOpen,
+}: ShowItemModalProps) => {
   // TODO: use enum
   let completedSubTasks;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -115,8 +120,10 @@ export const ShowItem = ({ isOpen, onRequestClose }: ShowItemModalProps) => {
   };
 
   const handleEditItemClick = () => {
-    setEditTask(true);
     setIsMenuOpen(false);
+    setShowItemModalOpen(false);
+    setEditTask(true);
+
     // onRequestClose();
   };
 
@@ -135,7 +142,7 @@ export const ShowItem = ({ isOpen, onRequestClose }: ShowItemModalProps) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [componentRef, isMenuOpen]);
+  }, [componentRef, isOpen]);
 
   return (
     <Modal

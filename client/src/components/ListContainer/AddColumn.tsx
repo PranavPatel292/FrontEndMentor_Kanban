@@ -23,7 +23,7 @@ export const AddColumn = () => {
           className="text-2xl font-bold leading-8 text-mediumGrey hover:underline cursor-pointer"
           onClick={handleOnClick}
         >
-          + New Column
+          {`+`} New Column
         </p>
       </div>
     </>

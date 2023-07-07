@@ -100,7 +100,11 @@ export const DraggableItem = ({ index, item }: DraggableItemProps) => {
 
   return (
     <>
-      <ShowItem isOpen={showItemModalOpen} onRequestClose={onRequestClose} />
+      <ShowItem
+        isOpen={showItemModalOpen}
+        setShowItemModalOpen={setShowItemModalOpen}
+        onRequestClose={onRequestClose}
+      />
 
       <Draggable draggableId={item.id} key={item.id} index={index}>
         {(provided) => {
@@ -121,7 +125,7 @@ export const DraggableItem = ({ index, item }: DraggableItemProps) => {
                 key={index}
               >
                 <div className="flex flex-col space-y-1">
-                  <p className="min-w-[248px] max-w-[248px] text-white font-bold text-[15px] leading-4 truncate">
+                  <p className="min-w-[248px] max-w-[248px] text-white font-bold text-[15px] leading-5 truncate">
                     {item.title}
                   </p>
                   <p className="text-mediumGrey leading-4 font-bold text-xs">

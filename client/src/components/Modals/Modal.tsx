@@ -7,6 +7,7 @@ interface ModalProps {
   children: React.ReactNode;
   className: string;
 }
+
 export const Modal = ({
   isOpen,
   onRequestClose,
@@ -21,7 +22,7 @@ export const Modal = ({
         shouldCloseOnOverlayClick={true}
         shouldCloseOnEsc={true}
         className={className}
-        overlayClassName="fixed z-[100] inset-0 bg-black opacity-95"
+        overlayClassName="fixed z-[100] inset-0"
       >
         {children}
       </ReactModal>

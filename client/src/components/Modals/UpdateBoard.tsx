@@ -24,7 +24,7 @@ const updateColumnNamesSchema = Yup.object().shape({
 
 const taskValidationSchema = Yup.object().shape({
   name: Yup.string().min(1).required("Please provide name"),
-  colNames: Yup.array().of(updateColumnNamesSchema).required(),
+  colNames: Yup.array().of(updateColumnNamesSchema).optional(),
 });
 
 // TODO: scroll to the last position of subtasks
@@ -48,13 +48,13 @@ export const UpdateBoard = ({ isOpen, onRequestClose, item }: ModalProps) => {
 
           <Formik
             initialValues={item}
-            // validationSchema={taskValidationSchema}
+            validationSchema={taskValidationSchema}
             onSubmit={(values, { resetForm }) => {
               const data = {
                 name: values.name,
                 colNames: values.columns.map((col: any) => {
                   if (col.id) return { id: col.id, name: col.name };
-                  return { name: col };
+                  return { name: col.name };
                 }),
               };
 
@@ -140,7 +140,7 @@ export const UpdateBoard = ({ isOpen, onRequestClose, item }: ModalProps) => {
                             }}
                             className="w-full mt-5 flex justify-center items-center bg-white rounded-3xl font-bold h-10 text-mainPurple"
                           >
-                            + Add Column
+                            {`+`} Add Column
                           </button>
                         </div>
                       )}
